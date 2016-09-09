@@ -18,6 +18,10 @@
 
 @end
 
+// Constants.
+static NSString* const kCellBackgroundColor = @"0.925 0.925 0.925";
+static float const kCellBorderWidth = 0.5f;
+
 @implementation WCCampaignTableViewCell
 
 #pragma mark - Interface
@@ -27,24 +31,27 @@
     NSDateFormatter* standardDateFormat = [NSDateFormatter new];
     NSString* timeRemaining;
     UIColor *backgroundColor;
+    NSTimeInterval dummyInterval = 60 * 60 * 24 * (rand() % 10 + 1);
     
     // Format the view information
     // Hard code random end date from now since there's no real end day
     [standardDateFormat setDateStyle:NSDateFormatterShortStyle];
-    timeRemaining = [NSString stringWithFormat:@"Ends %@", [standardDateFormat stringFromDate:[NSDate dateWithTimeIntervalSinceNow:60 * 60 * 24 * (rand() % 10 + 1)]]];
+    timeRemaining = [NSString stringWithFormat:@"Ends %@", [standardDateFormat stringFromDate:[NSDate dateWithTimeIntervalSinceNow:dummyInterval]]];
     
     // Configure the display information within the view
     self.title.text = model.title;
     self.endDate.text = timeRemaining;
-    [model fetchImageIfNeededWithCompletion:^(UIImage *image, NSError *error) {
+    
+    [model fetchImageIfNeededWithCompletion:^(UIImage *image, NSError *error)
+    {
         [self.thumbnailImageView setContentMode:UIViewContentModeScaleToFill];
         self.thumbnailImageView.image = image;
     }];
     
     // Cell appearance customization
-    backgroundColor = [UIColor colorWithCIColor:[CIColor colorWithString:@"0.925 0.925 0.925"]];
+    backgroundColor = [UIColor colorWithCIColor:[CIColor colorWithString:kCellBackgroundColor]];
     
-    [self.contentInsetView.layer setBorderWidth:0.5f];
+    [self.contentInsetView.layer setBorderWidth:kCellBorderWidth];
     [self.contentInsetView.layer setBorderColor:backgroundColor.CGColor];
     [self.contentView setBackgroundColor:backgroundColor];
 }

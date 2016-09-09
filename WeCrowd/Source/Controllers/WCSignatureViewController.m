@@ -7,7 +7,7 @@
 //
 
 #import "WCSignatureViewController.h"
-#import "WCWePayManager.h"
+#import "WCPaymentManager.h"
 #import "WCDonationManager.h"
 #import "WCAlert.h"
 #import "CWStatusBarNotification.h"
@@ -115,7 +115,7 @@
 
 - (void) storeSignature
 {
-    [[WCWePayManager sharedInstance] storeSignatureImage:self.signatureView.signatureImage
+    [[WCPaymentManager sharedInstance] storeSignatureImage:self.signatureView.signatureImage
                                            forCheckoutID:[WCDonationManager sharedManager].checkoutID
                                        signatureDelegate:self];
 }

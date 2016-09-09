@@ -1,5 +1,5 @@
 //
-//  WCWePayManager.h
+//  WCPaymentManager.h
 //  WeCrowd
 //
 //  Created by Zach Vega-Perkins on 6/30/15.
@@ -12,7 +12,7 @@
 
 @class WCCreditCardModel;
 
-@interface WCWePayManager : NSObject
+@interface WCPaymentManager : NSObject
 
 + (instancetype) sharedInstance;
 

@@ -7,7 +7,7 @@
 //
 
 #import "WCSwiperViewController.h"
-#import "WCWePayManager.h"
+#import "WCPaymentManager.h"
 #import "WCDonationManager.h"
 #import "WCAlert.h"
 #import "WCConstants.h"
@@ -64,7 +64,7 @@
     [self toggleWaitingActivity:YES];
     
     // Kick off the swiping payment sequence
-    [[WCWePayManager sharedInstance] startCardReadTokenizationWithReaderDelegate:self
+    [[WCPaymentManager sharedInstance] startCardReadTokenizationWithReaderDelegate:self
                                                             tokenizationDelegate:self];
 }
 

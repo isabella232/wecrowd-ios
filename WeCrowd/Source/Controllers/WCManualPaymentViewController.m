@@ -9,7 +9,7 @@
 #import "WCManualPaymentViewController.h"
 
 #import <WePay/WePay.h>
-#import "WCWePayManager.h"
+#import "WCPaymentManager.h"
 #import "WCDonationManager.h"
 #import "WCLoginManager.h"
 #import "WCCreditCardModel.h"
@@ -132,7 +132,7 @@
 
 - (void) executeDonation
 {
-    [[WCWePayManager sharedInstance] tokenizeCreditCardWithInfo:self.creditCardModel
+    [[WCPaymentManager sharedInstance] tokenizeCreditCardWithInfo:self.creditCardModel
                                                  isMerchantUser:[WCLoginManager userType]
                                                           email:self.email
                                                        delegate:self];

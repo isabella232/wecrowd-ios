@@ -1,15 +1,15 @@
 //
-//  WCWePayManager.m
+//  WCPaymentManager.m
 //  WeCrowd
 //
 //  Created by Zach Vega-Perkins on 6/30/15.
 //  Copyright (c) 2015 WePay. All rights reserved.
 //
 
-#import "WCWePayManager.h"
+#import "WCPaymentManager.h"
 #import "WCCreditCardModel.h"
 
-@interface WCWePayManager ()
+@interface WCPaymentManager ()
 
 @property (nonatomic, strong, readwrite) WePay *wepay;
 
@@ -17,13 +17,13 @@
 
 static NSString* const kClientID = @"116876";
 
-@implementation WCWePayManager
+@implementation WCPaymentManager
 
 #pragma mark - Class Methods
 
 + (instancetype) sharedInstance
 {
-    static WCWePayManager *instance = nil;
+    static WCPaymentManager *instance = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken,
@@ -33,7 +33,7 @@ static NSString* const kClientID = @"116876";
                         // Use the example app client ID suitable for testing
                         config = [[WPConfig alloc] initWithClientId:kClientID
                                                         environment:kWPEnvironmentStage];
-                        instance = [WCWePayManager new];
+                        instance = [WCPaymentManager new];
                         instance.wepay = [[WePay alloc] initWithConfig:config];
                    });
     

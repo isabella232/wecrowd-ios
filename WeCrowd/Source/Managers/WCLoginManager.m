@@ -25,17 +25,26 @@ static WCLoginUserType userType = WCLoginUserPayer;
 {
     [self loginUserWithUsername:username
                        password:password
-                completionBlock:^(NSError *error) {
-                    if (!error) {
-                        userType = WCLoginUserMerchant;
-                    }
-                    
-                    completionBlock(error);
-                }];
+                completionBlock:^(NSError *error)
+    {
+        if (!error)
+        {
+            userType = WCLoginUserMerchant;
+        }
+        
+        completionBlock(error);
+    }];
 }
 
-+ (WCUserModel *) currentUser { return user; }
-+ (WCLoginUserType) userType { return userType; }
++ (WCUserModel *) currentUser
+{
+    return user;
+}
+
++ (WCLoginUserType) userType
+{
+    return userType;
+}
 
 #pragma mark - Helper Methods
 
@@ -45,20 +54,27 @@ static WCLoginUserType userType = WCLoginUserPayer;
 {
     [WCClient loginWithUsername:username
                        password:password
-                completionBlock:^(NSDictionary *userInfo, NSError *error) {
-                    if (error) {
-                        NSLog(@"Error: LoginManager: Unable to login user. Description: %@.", [error localizedDescription]);
-                    } else {
-                        // Allocate memory if user instance has not been created
-                        if (!user) { user = [WCUserModel new]; }
-                        
-                        [user setUserID:[userInfo objectForKey:kAPIUserIDKey]
-                                  email:username
-                                  token:[userInfo objectForKey:kAPIUserTokenKey]];
-                    }
-                    
-                    completionBlock (error);
-                }];
+                completionBlock:^(NSDictionary *userInfo, NSError *error)
+    {
+        if (error)
+        {
+            NSLog(@"Error: LoginManager: Unable to login user. Description: %@.", [error localizedDescription]);
+        }
+        else
+        {
+            // Allocate memory if user instance has not been created
+            if (!user)
+            {
+                user = [WCUserModel new];
+            }
+            
+            [user setUserID:[userInfo objectForKey:kAPIUserIDKey]
+                      email:username
+                      token:[userInfo objectForKey:kAPIUserTokenKey]];
+        }
+        
+        completionBlock (error);
+    }];
 }
 
 + (void) logoutWithCompletionBlock:(void (^)(NSError *)) completionBlock

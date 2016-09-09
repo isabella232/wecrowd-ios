@@ -15,6 +15,8 @@
 
 @end
 
+static NSString* const kClientID = @"116876";
+
 @implementation WCWePayManager
 
 #pragma mark - Class Methods
@@ -24,15 +26,16 @@
     static WCWePayManager *instance = nil;
     static dispatch_once_t onceToken;
     
-    dispatch_once(&onceToken, ^{
-        WPConfig *config;
-        
-        // Use the example app client ID suitable for testing
-        config = [[WPConfig alloc] initWithClientId:@"116876"
-                                        environment:kWPEnvironmentStage];
-        instance = [WCWePayManager new];
-        instance.wepay = [[WePay alloc] initWithConfig:config];
-    });
+    dispatch_once(&onceToken,
+                  ^{
+                        WPConfig *config;
+                        
+                        // Use the example app client ID suitable for testing
+                        config = [[WPConfig alloc] initWithClientId:kClientID
+                                                        environment:kWPEnvironmentStage];
+                        instance = [WCWePayManager new];
+                        instance.wepay = [[WePay alloc] initWithConfig:config];
+                   });
     
     return instance;
 }

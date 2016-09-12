@@ -38,27 +38,32 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
     [self makePostRequestToEndPoint:[self apiURLWithEndpoint:kAPIEndpointLogin]
                              values:@{ kAPIEmailKey : username, kAPIPasswordKey : password }
                         accessToken:nil
-                       successBlock:^(NSDictionary *returnData) {
-                           // Check the status of the return data
-                           if ([returnData objectForKey:kAPIParameterErrorCode]) {
-                               NSError *APIError;
-                               
-                               APIError = [WCError APIErrorWithDescription:@"API error for login."
-                                                             serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
-                                                                  codeData:returnData];
-                               
-                               completionBlock(nil, APIError);
-                               NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
-                           } else {
-                               // No error code, so hand off the data
-                               completionBlock(returnData, nil);
-                           }
-                       }
-                       errorHandler:^(NSError *error) {
-                           // This means there was either a connection error or a parse error
-                           completionBlock(nil, error);
-                       }
-     ];
+                       successBlock:^(NSDictionary *returnData)
+    {
+        // Check the status of the return data
+        if ([returnData objectForKey:kAPIParameterErrorCode])
+        {
+            NSError *APIError;
+
+            APIError = [WCError APIErrorWithDescription:@"API error for login."
+                                         serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
+                                              codeData:returnData];
+
+            completionBlock(nil, APIError);
+            NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
+        }
+        else
+        {
+           // No error code, so hand off the data
+           completionBlock(returnData, nil);
+        }
+    }
+                       // This bit looks confusing, but errorHandler is the final argument of the post request.
+                       errorHandler:^(NSError *error)
+    {
+        // This means there was either a connection error or a parse error
+        completionBlock(nil, error);
+    }];
 }
 
 + (void) donateWithDonation:(WCCampaignDonationModel *) donation
@@ -76,41 +81,48 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
      [self makePostRequestToEndPoint:[self apiURLWithEndpoint:kAPIEndpointDonate]
                               values:values
                          accessToken:nil
-                        successBlock:^(id returnData) {
-                            // Check for an API error
-                            if ([returnData objectForKey:kAPIParameterErrorCode]) {
-                                NSError *APIError;
-                                
-                                APIError = [WCError APIErrorWithDescription:@"API error for donation."
-                                                              serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
-                                                                   codeData:returnData];
-                                
-                                completionBlock(nil, APIError);
-                                NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
-                            } else {
-                                // No error code, so hand off the data
-                                NSNumber *checkoutIDNum = [returnData objectForKey:@"checkout_id"];
-                                
-                                completionBlock([checkoutIDNum stringValue], nil);
-                            }
-                        }
-                        errorHandler:^(NSError *error) {
-                            // This means there was either a connection error or a parse error
-                            completionBlock(nil, error);
-                            NSLog(@"Error: Client: Unable to complete donation.");
-                        }];
+                        successBlock:^(id returnData)
+    {
+        // Check for an API error
+        if ([returnData objectForKey:kAPIParameterErrorCode])
+        {
+            NSError *APIError;
+            
+            APIError = [WCError APIErrorWithDescription:@"API error for donation."
+                                          serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
+                                               codeData:returnData];
+            
+            completionBlock(nil, APIError);
+            NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
+        }
+        else
+        {
+            // No error code, so hand off the data
+            NSNumber *checkoutIDNum = [returnData objectForKey:@"checkout_id"];
+            
+            completionBlock([checkoutIDNum stringValue], nil);
+        }
+    }
+                        errorHandler:^(NSError *error)
+    {
+        // This means there was either a connection error or a parse error
+        completionBlock(nil, error);
+        NSLog(@"Error: Client: Unable to complete donation.");
+    }];
 }
 
 + (void) fetchAllCampaigns:(WCArrayReturnBlock) completionBlock
 {
     [self makeGetRequestToEndpoint:[self apiURLWithEndpoint:kAPIEndpointCampaigns]
                        accessToken:nil
-                      successBlock:^(NSArray *returnData) {
-                          completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
-                      }
-                      errorHandler:^(NSError *error) {
-                          completionBlock(nil, error);
-                      }];
+                      successBlock:^(NSArray *returnData)
+    {
+        completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
+    }
+                      errorHandler:^(NSError *error)
+    {
+        completionBlock(nil, error);
+    }];
 }
 
 + (void) fetchAllCampaignsForUser:(NSString *) userID
@@ -120,27 +132,31 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
     [self makePostRequestToEndPoint:[self apiURLWithEndpoint:kAPIEndpointUsers]
                              values:@{ kAPIUserIDKey : userID, kAPIUserTokenKey : token }
                         accessToken:nil
-                       successBlock:^(NSArray *returnData) {
-                           NSLog(@"Success: Client: Fetched campaigns for user.");
-                           completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
-                       }
-                       errorHandler:^(NSError *error) {
-                           NSLog(@"Error: Client: failed to fetch user campaigns.");
-                           completionBlock(nil, error);
-                       }];
+                       successBlock:^(NSArray *returnData)
+    {
+        NSLog(@"Success: Client: Fetched campaigns for user.");
+        completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
+    }
+                       errorHandler:^(NSError *error)
+    {
+        NSLog(@"Error: Client: failed to fetch user campaigns.");
+        completionBlock(nil, error);
+    }];
 }
 
 + (void) fetchFeaturedCampaigns:(WCArrayReturnBlock) completionBlock
 {
     [self makeGetRequestToEndpoint:[self apiURLWithEndpoint:kAPIEndpointFeaturedCampaigns]
                        accessToken:nil
-                      successBlock:^(id returnData) {
-                           NSLog(@"Success: Client: Fetched featured campaigns.");
-                          completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
-                      }
-                      errorHandler:^(NSError *error) {
-                          completionBlock(nil, error);
-                      }];
+                      successBlock:^(id returnData)
+    {
+        NSLog(@"Success: Client: Fetched featured campaigns.");
+        completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
+    }
+                      errorHandler:^(NSError *error)
+    {
+        completionBlock(nil, error);
+    }];
 }
 
 + (void) fetchCampaignWithID:(NSString *) campaignID
@@ -152,18 +168,22 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
     
     [self makeGetRequestToEndpoint:[self apiURLWithEndpoint:URLString]
                        accessToken:nil
-                      successBlock:^(id returnData) {
-                          NSLog(@"Success: Client: Fetched campaign.");
-                          
-                          [WCModelProcessor createCampaignDetailFromDictionary:returnData
-                                                                    completion:^(WCCampaignDetailModel *model, NSError *error) {
-                                                                        completionBlock(model, error);
-                                                                    }];
-                      }
-                      errorHandler:^(NSError *error) {
-                          NSLog(@"Error: Client: Unable to fetch campaign.");
-                          completionBlock(nil, error);
-                      }];
+                      successBlock:^(id returnData)
+    {
+        NSLog(@"Success: Client: Fetched campaign.");
+      
+        [WCModelProcessor createCampaignDetailFromDictionary:returnData
+                                                  completion:^(WCCampaignDetailModel *model, NSError *error)
+      
+        {
+            completionBlock(model, error);
+        }];
+    }
+                      errorHandler:^(NSError *error)
+    {
+        NSLog(@"Error: Client: Unable to fetch campaign.");
+        completionBlock(nil, error);
+    }];
 }
 
 #pragma mark - Endpoint Requests
@@ -195,6 +215,7 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
                    errorHandler:errorHandler];
 }
 
+// TODO: change this so that there is only one result block that includes an error parameter.
 + (void) makeRequestToEndPoint:(NSURL *) endpoint
                         method:(NSString *) method
                         values:(NSDictionary *) params
@@ -206,28 +227,32 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
                                method:method
                              bodyData:params
                           accessToken:accessToken
-                      completionBlock:^(NSMutableURLRequest *returnRequest, NSError *error) {
-                          if (error) {
-                              // Encountered a parse error while creating the request
-                              errorHandler(error);
-                          } else {
-                              // Request was successfully created
-                              NSOperationQueue* queue = [NSOperationQueue mainQueue];
-                              
-                              // Send the request asynchronously and process the response
-                              [NSURLConnection sendAsynchronousRequest:returnRequest
-                                                                 queue:queue
-                                                     completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                                         // Process the server's response
-                                                         [self processResponse:response
-                                                                          data:data
-                                                                         error:connectionError
-                                                                  successBlock:successHandler
-                                                                  errorHandler:errorHandler];
-                                                     }];
-                          }
-                      }
-     ];
+                      completionBlock:^(NSMutableURLRequest *returnRequest, NSError *error)
+    {
+        if (error)
+        {
+          // Encountered a parse error while creating the request
+          errorHandler(error);
+        }
+        else
+        {
+          // Request was successfully created
+          NSOperationQueue* queue = [NSOperationQueue mainQueue];
+          
+          // Send the request asynchronously and process the response
+          [NSURLConnection sendAsynchronousRequest:returnRequest
+                                             queue:queue
+                                 completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+          {
+              // Process the server's response
+              [self processResponse:response
+                               data:data
+                              error:connectionError
+                       successBlock:successHandler
+                       errorHandler:errorHandler];
+          }];
+        }
+    }];
 }
 
 #pragma mark - Helpers
@@ -248,26 +273,32 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
     [request setValue:@"utf-8" forHTTPHeaderField:@"charset"];
     
     // Set the access token if it exists
-    if (accessToken) {
+    if (accessToken)
+    {
         [request setValue:[NSString stringWithFormat:@"bearer %@", accessToken]
        forHTTPHeaderField:@"Authorization"];
     }
     
     // Set the body data if there is any
-    if (bodyData) {
+    if (bodyData)
+    {
         [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:bodyData
                                                              options:kNilOptions
                                                                error:&parseError]];
     }
     
-    if (parseError) {
+    if (parseError)
+    {
         completion(nil, parseError);
-    } else {
+    }
+    else
+    {
         completion(request, nil);
     }
 }
 
-+ (NSURL *) apiURLWithEndpoint:(NSString *) endpoint {
++ (NSURL *) apiURLWithEndpoint:(NSString *) endpoint
+{
     return [NSURL URLWithString:[kAPIURLString stringByAppendingString:endpoint]];
 }
 
@@ -284,12 +315,14 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
     // Build a structure from the raw data
     id extractedData = nil;
     
-    if ([data length] > 0) {
+    if ([data length] > 0)
+    {
         // Try to extract JSON data first
         extractedData = [NSJSONSerialization JSONObjectWithData:data
                                                         options:kNilOptions
                                                           error:&extractionError];
-        if (!extractedData) {
+        if (!extractedData)
+        {
             // If JSON extraction fails, try to extract binary data
             // For now, only image case is handled
             // (This really should be in a separate method, but I'm in too deep atm =/)
@@ -297,14 +330,18 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
         }
     }
     
-    if (extractedData && !error) {
+    if (extractedData && !error)
+    {
         // Safely retrieve the status code since there were no errors and the data is valid
         NSInteger statusCode = [(NSHTTPURLResponse *) response statusCode];
         
         // Check the status code. 200 means success
-        if (statusCode == 200) {
+        if (statusCode == 200)
+        {
             successHandler(extractedData);
-        } else {
+        }
+        else
+        {
             NSDictionary *userInfo;
             NSString *description;
             
@@ -315,10 +352,14 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
                                              code:statusCode
                                          userInfo:userInfo]);
         }
-    } else if (error) {
+    }
+    else if (error)
+    {
         errorHandler(error);
         NSLog(@"Error: Client: %@.", [error localizedDescription]);
-    } else if (extractionError) {
+    }
+    else if (extractionError)
+    {
         errorHandler(extractionError);
         NSLog(@"Error: Client: %@.", [extractionError localizedDescription]);
     }
@@ -331,11 +372,14 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
 {
     [self makeGetRequestToEndpoint:[NSURL URLWithString:URLString]
                        accessToken:nil
-                      successBlock:^(id returnData) {
-                          completionBlock(returnData, nil);
-                      } errorHandler:^(NSError *error) {
-                          completionBlock(nil, error);
-                      }];
+                      successBlock:^(id returnData)
+    {
+        completionBlock(returnData, nil);
+    }
+    errorHandler:^(NSError *error)
+    {
+        completionBlock(nil, error);
+    }];
 }
 
 @end

@@ -12,7 +12,8 @@
 
 @interface WCDonationManager : NSObject
 
-typedef NS_ENUM(NSInteger, WCDonationStatus) {
+typedef NS_ENUM(NSInteger, WCDonationStatus)
+{
     WCDonationStatusNone = 0,
     WCDonationStatusPending = 1
 };

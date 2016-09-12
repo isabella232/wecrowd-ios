@@ -49,18 +49,23 @@
     
     // Make the API donate call
     [WCClient donateWithDonation:self.donation
-                 completionBlock:^(NSString *checkoutID, NSError *error) {
-                     if (error) {
-                         NSLog(@"Error: DonationManager: Unable to make donation. Description: %@.", [error localizedDescription]);
-                     } else {
-                         self.donation.checkoutID = checkoutID;
-                         self.checkoutID = self.donation.checkoutID;
-                         NSLog(@"Success: DonationManager: Donation successful.");
-                     }
-                     
-                     self.donationStatus = WCDonationStatusNone;
-                     completionBlock(error);
-                 }];
+                 completionBlock:^(NSString *checkoutID, NSError *error)
+    {
+         if (error)
+         {
+             NSLog(@"Error: DonationManager: Unable to make donation. Description: %@.", [error localizedDescription]);
+         }
+         else
+         {
+             self.donation.checkoutID = checkoutID;
+             self.checkoutID = self.donation.checkoutID;
+             
+             NSLog(@"Success: DonationManager: Donation successful.");
+         }
+         
+         self.donationStatus = WCDonationStatusNone;
+         completionBlock(error);
+    }];
     
     // Set the status
     self.donationStatus = WCDonationStatusPending;

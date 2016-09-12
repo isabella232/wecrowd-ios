@@ -17,12 +17,14 @@
 
 @implementation WCModelProcessor
 
+
 + (NSArray *) createProcessedArrayForCampaigns:(NSArray *) campaigns
 {
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[campaigns count]];
     
     // Process the list of dictionaries
-    for (int i = 0; i < [campaigns count]; ++i) {
+    for (int i = 0; i < [campaigns count]; ++i)
+    {
         NSDictionary *campaign;
         NSString *campaignID, *campaignName, *imageURLString;
         
@@ -45,33 +47,39 @@
 {
     CGFloat donationAmount, donationTarget;
     NSString *imageURLString, *campaignIDString;
+    NSNumber* extractedNumber;
     
-    // Nasty cast + conversion to get the float value
-    donationAmount = [((NSNumber *) [dictionary objectForKey:kAPICampaignGoalKey]) floatValue];
-    donationTarget = [((NSNumber *) [dictionary objectForKey:kAPICampaignProgressKey]) floatValue];
+    // Nasty cast + conversion to get the model values.
+    extractedNumber = ((NSNumber *) [dictionary objectForKey:kAPICampaignGoalKey]);
+    donationAmount = [extractedNumber floatValue];
+    
+    extractedNumber = ((NSNumber *) [dictionary objectForKey:kAPICampaignProgressKey]);
+    donationTarget = [extractedNumber floatValue];
     
     imageURLString = [dictionary objectForKey:kAPICampaignImageURLKey];
     campaignIDString = [[dictionary objectForKey:kAPICampaignIDKey] stringValue];
     
     // Separate call to download the image - little wonky, I know
     [WCClient fetchImageWithURLString:imageURLString
-                      completionBlock:^(UIImage *image, NSError *error) {
-                          WCCampaignDetailModel *detailModel;
-                          
-                          if (error) {
-                              NSLog(@"Error: ModelProcessor: Unable to fetch image.");
-                          }
-                          
-                          detailModel = [[WCCampaignDetailModel alloc] initWithCampaign:campaignIDString
-                                                                                  title:[dictionary objectForKey:kAPICampaignNameKey]
-                                                                                endDate:nil
-                                                                         donationTarget:donationAmount
-                                                                         donationAmount:donationTarget
-                                                                            detailImage:image
-                                                                      detailDescription:[dictionary objectForKey:kAPICampaignDescriptionKey]];
-                          
-                          completion(detailModel, error);
-                      }];
+                      completionBlock:^(UIImage *image, NSError *error)
+    {
+        WCCampaignDetailModel *detailModel;
+
+        if (error)
+        {
+          NSLog(@"Error: ModelProcessor: Unable to fetch image.");
+        }
+
+        detailModel = [[WCCampaignDetailModel alloc] initWithCampaign:campaignIDString
+                                                              title:[dictionary objectForKey:kAPICampaignNameKey]
+                                                            endDate:nil
+                                                     donationTarget:donationAmount
+                                                     donationAmount:donationTarget
+                                                        detailImage:image
+                                                  detailDescription:[dictionary objectForKey:kAPICampaignDescriptionKey]];
+
+        completion(detailModel, error);
+    }];
 }
 
 + (WCCreditCardModel *) createCreditCardModelFromFirstName:(NSString *) firstName
@@ -93,11 +101,11 @@
     expiration = [calendar dateFromComponents:dateComponents];
     
     return [[WCCreditCardModel alloc] initWithFirstName:firstName
-                                                               lastName:lastName
-                                                             cardNumber:cardNumber
-                                                              cvvNumber:cvv
-                                                                zipCode:zipCode
-                                                         expirationDate:expiration];
+                                               lastName:lastName
+                                             cardNumber:cardNumber
+                                              cvvNumber:cvv
+                                                zipCode:zipCode
+                                         expirationDate:expiration];
 }
 
 @end

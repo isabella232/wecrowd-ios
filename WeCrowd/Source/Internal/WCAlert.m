@@ -27,7 +27,9 @@
     
     [alertController addAction:closeAction];
     
-    [viewController presentViewController:alertController animated:YES completion:completion];
+    [viewController presentViewController:alertController
+                                 animated:YES
+                               completion:completion];
 }
 
 + (void) showAlertWithOptionFromViewController:(UIViewController *) viewController

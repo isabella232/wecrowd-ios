@@ -21,19 +21,23 @@
     [super viewWillAppear:animated];
     
     // Logout whenever this view is presented
-    [WCLoginManager logoutWithCompletionBlock:^(NSError *error) {
-        if (!error) {
+    [WCLoginManager logoutWithCompletionBlock:^(NSError *error)
+    {
+        if (!error)
+        {
             // Don't need to do anything
         }
     }];
 }
 
-- (void) didReceiveMemoryWarning {
+- (void) didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction) viewCampaigns:(id) sender {
+- (IBAction) viewCampaigns:(id) sender
+{
     [self performSegueWithIdentifier:kIBSegueEntryToCampaignFeed sender:self];
 }
 

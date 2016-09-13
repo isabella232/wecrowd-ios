@@ -10,6 +10,7 @@
 
 @implementation WCAlert
 
+// TODO: ALL completion blocks should be selectors.
 + (void) showSimpleAlertFromViewController:(UIViewController *) viewController
                                  withTitle:(NSString *) title
                                    message:(NSString *) message

@@ -30,12 +30,14 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 #pragma mark - UIViewController
 
-- (void) viewDidLoad {
+- (void) viewDidLoad
+{
     [super viewDidLoad];
     
     [self executeCampaignFetch];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
         self.tableView.rowHeight = 500;
     }
 }
@@ -85,7 +87,8 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 - (void) prepareForSegue:(UIStoryboardSegue *) segue sender:(id) sender
 {
-    if ([segue.identifier isEqualToString:kIBSegueCampaignFeedToCampaignDetail]) {
+    if ([segue.identifier isEqualToString:kIBSegueCampaignFeedToCampaignDetail])
+    {
         self.delegate = [segue destinationViewController];
         
         [self.delegate campaignFeedViewController:self
@@ -97,13 +100,21 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 - (void) executeCampaignFetch
 {
-    [WCClient fetchFeaturedCampaigns:^(NSArray *campaigns, NSError *error) {
-            if (error) {
+    [WCClient fetchFeaturedCampaigns:^(NSArray *campaigns, NSError *error)
+    {
+            if (error)
+            {
                 [self showCampaignFeedError:error];
-            } else {
-                if ([WCLoginManager userType] == WCLoginUserPayer) {
+            }
+            else
+            {
+                if ([WCLoginManager userType] == WCLoginUserPayer)
+                {
                     self.campaigns = campaigns;
-                } else {
+                }
+                else
+                {
+                    // Show only an arbitrary 1/3 of the campaigns for the merchant.
                     self.campaigns = [campaigns subarrayWithRange:NSMakeRange(0, campaigns.count / 3)];
                 }
                 
@@ -111,7 +122,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
                 // when the request will finish until this block
                 [self.tableView reloadData];
             }
-        }];
+    }];
 }
 
 - (void) showCampaignFeedError:(NSError *) error

@@ -70,27 +70,31 @@
                                                                     name:self.creditCardModel.fullName
                                                                    email:self.email
                                                             creditCardID:paymentToken.tokenId
-                                                         completionBlock:^(NSError *error) {
-                                                             if (!error) {
-                                                                 [self.activityIndicator stopAnimating];
-                                                                 [self.statusBarNotification displayNotificationWithMessage:@"Donation Processed!"
-                                                                                                                forDuration:3.f];
-                                                                 [self.delegate didFinishWithSender:self];
-                                                             } else {
-                                                                 NSString *message;
-                                                                 
-                                                                 message = [NSString stringWithFormat:@"There was a server error: %@ Please try again.", [error localizedDescription]];
-                                                                 
-                                                                 [WCAlert showAlertWithOptionFromViewController:self
-                                                                                                       withTitle:@"Unable to complete donation"
-                                                                                                         message:message
-                                                                                                     optionTitle:@"Try Again"
-                                                                                                optionCompletion:^{ [self executeDonation]; }
-                                                                                                 closeCompletion:nil];
-                                                             }
-                                                             
-                                                             [self shouldDisplayPaymentFeedback:NO];
-                                                         }];
+                                                         completionBlock:^(NSError *error)
+    {
+        if (!error)
+        {
+            [self.activityIndicator stopAnimating];
+            [self.statusBarNotification displayNotificationWithMessage:@"Donation Processed!"
+                                                    forDuration:3.f];
+            [self.delegate didFinishWithSender:self];
+        }
+        else
+        {
+            NSString *message;
+     
+            message = [NSString stringWithFormat:@"There was a server error: %@ Please try again.", [error localizedDescription]];
+     
+            [WCAlert showAlertWithOptionFromViewController:self
+                                                 withTitle:@"Unable to complete donation"
+                                                   message:message
+                                               optionTitle:@"Try Again"
+                                          optionCompletion:^{ [self executeDonation]; }
+                                           closeCompletion:nil];
+        }
+ 
+        [self shouldDisplayPaymentFeedback:NO];
+    }];
     
     [NSTimer scheduledTimerWithTimeInterval:10
                                      target:self
@@ -104,9 +108,9 @@
     NSString *message = [NSString stringWithFormat:@"Could not complete donation. %@", [error localizedDescription]];
     
     [WCAlert showSimpleAlertFromViewController:self
-                                      withTitle:@"Unable to process information"
-                                        message:message
-                                     completion:nil];
+                                     withTitle:@"Unable to process information"
+                                       message:message
+                                    completion:nil];
     
     [self shouldDisplayPaymentFeedback:NO];
 }
@@ -143,10 +147,13 @@
 
 - (void) shouldDisplayPaymentFeedback:(BOOL) display
 {
-    if (display) {
+    if (display)
+    {
         [self.activityIndicator startAnimating];
         [self.submitFormButton setHidden:YES];
-    } else {
+    }
+    else
+    {
         [self.activityIndicator stopAnimating];
         [self.submitFormButton setHidden:NO];
     }

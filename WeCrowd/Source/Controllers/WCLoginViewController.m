@@ -38,7 +38,8 @@
 
 #pragma mark - IBOutlets
 
-- (IBAction) login:(id) sender {
+- (IBAction) login:(id) sender
+{
     NSString *username, *password;
     
     username = self.emailField.text;
@@ -48,7 +49,8 @@
                                      password:password
                               completionBlock:^(NSError *error)
     {
-        if (error) {
+        if (error)
+        {
             NSString *message;
             
             message = [NSString stringWithFormat:@"Unable to log you in: %@. Please check your information and try again.", [error localizedDescription]];
@@ -58,7 +60,9 @@
                                               withTitle:@"Please try again"
                                                 message:message
                                              completion:nil];
-        } else if (!self.isLoadingCampaigns) {
+        }
+        else if (!self.isLoadingCampaigns)
+        {
             self.isLoadingCampaigns = YES;
 
             [self performSegueWithIdentifier:kIBSegueEntryToCampaignFeed sender:self];

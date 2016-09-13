@@ -20,9 +20,12 @@
 
 - (instancetype) initWithCoder:(NSCoder *) aDecoder
 {
-    if (self = [super initWithCoder:aDecoder]) {
+    if (self = [super initWithCoder:aDecoder])
+    {
         [self setUpStatusBarNotification];
-    } else {
+    }
+    else
+    {
         // Do nothing
     }
     
@@ -45,7 +48,8 @@
 
 - (void) prepareForSegue:(UIStoryboardSegue *) segue sender:(id) sender
 {
-    if ([segue.identifier isEqualToString:kIBSeguePaymentViewtoSignatureView]) {
+    if ([segue.identifier isEqualToString:kIBSeguePaymentViewtoSignatureView])
+    {
         WCSignatureViewController *signatureViewController;
         
         signatureViewController = segue.destinationViewController;

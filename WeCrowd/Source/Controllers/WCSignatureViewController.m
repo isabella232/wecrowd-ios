@@ -25,16 +25,20 @@
 
 - (instancetype) initWithCoder:(NSCoder *)aDecoder
 {
-    if (self = [super initWithCoder:aDecoder]) {
+    if (self = [super initWithCoder:aDecoder])
+    {
         [self setUpNotification];
-    } else {
+    }
+    else
+    {
         // Do nothing
     }
     
     return self;
 }
 
-- (void) viewDidLoad {
+- (void) viewDidLoad
+{
     [super viewDidLoad];
 
     [self styleSignatureView];
@@ -42,7 +46,8 @@
     self.navigationItem.hidesBackButton = YES;
 }
 
-- (void) didReceiveMemoryWarning {
+- (void) didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -57,11 +62,14 @@
 
 - (IBAction) submitSignatureAction:(id) sender
 {
-    if (self.signatureView.hasSignature) {
+    if (self.signatureView.hasSignature)
+    {
         [self switchElementsForProcessing:YES];
         
         [self storeSignature];
-    } else {
+    }
+    else
+    {
         [self switchElementsForProcessing:NO];
         
         [WCAlert showSimpleAlertFromViewController:self
@@ -93,9 +101,7 @@
                                          withTitle:@"Unable to store signature."
                                            message:[NSString stringWithFormat:@"Storing the signature failed. %@", [error localizedDescription]]
                                        optionTitle:@"Try Again"
-                                  optionCompletion:^{
-                                      [self storeSignature];
-                                  }
+                                  optionCompletion:^{ [self storeSignature]; }
                                    closeCompletion:nil];
     
     NSLog(@"Error: SignatureViewController: %@.", [error localizedDescription]);
@@ -116,8 +122,8 @@
 - (void) storeSignature
 {
     [[WCPaymentManager sharedInstance] storeSignatureImage:self.signatureView.signatureImage
-                                           forCheckoutID:[WCDonationManager sharedManager].checkoutID
-                                       signatureDelegate:self];
+                                             forCheckoutID:[WCDonationManager sharedManager].checkoutID
+                                         signatureDelegate:self];
 }
 
 - (void) setUpNotification
@@ -136,11 +142,14 @@
 
 - (void) switchElementsForProcessing:(BOOL) processing
 {
-    if (processing) {
+    if (processing)
+    {
         [self.activityIndicator startAnimating];
         [self.signatureView setUserInteractionEnabled:NO];
         self.signatureView.backgroundColor = [UIColor lightGrayColor];
-    } else {
+    }
+    else
+    {
         [self.activityIndicator stopAnimating];
         [self.signatureView setUserInteractionEnabled:YES];
         self.signatureView.backgroundColor = [UIColor whiteColor];

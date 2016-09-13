@@ -45,8 +45,10 @@
 
 - (BOOL) textFieldShouldReturn:(UITextField *) textField
 {
-    if (textField == self.donationField) {
-        if ([self isDonationFieldValid]) {
+    if (textField == self.donationField)
+    {
+        if ([self isDonationFieldValid])
+        {
             [textField resignFirstResponder];
             
             [self executeCardRead];
@@ -65,12 +67,13 @@
     
     // Kick off the swiping payment sequence
     [[WCPaymentManager sharedInstance] startCardReadTokenizationWithReaderDelegate:self
-                                                            tokenizationDelegate:self];
+                                                              tokenizationDelegate:self];
 }
 
 - (IBAction) cancelAction:(id) sender
 {
-    if ([[WCDonationManager sharedManager] donationStatus] == WCDonationStatusNone) {
+    if ([[WCDonationManager sharedManager] donationStatus] == WCDonationStatusNone)
+    {
         [self.delegate didFinishWithSender:self];
     }
 }
@@ -85,20 +88,31 @@
 
 - (void) cardReaderDidChangeStatus:(id) status
 {
-    if (status == kWPCardReaderStatusNotConnected) {
+    if (status == kWPCardReaderStatusNotConnected)
+    {
         self.swiperStatusLabel.text = @"Please connect the card reader to your device.";
         [self.activityIndicator stopAnimating];
-    } else if (status == kWPCardReaderStatusConnected) {
+    }
+    else if (status == kWPCardReaderStatusConnected)
+    {
         self.swiperStatusLabel.text = @"Card reader connected.";
-    } else if (status == kWPCardReaderStatusWaitingForCard) {
+    }
+    else if (status == kWPCardReaderStatusWaitingForCard)
+    {
         self.swiperStatusLabel.text = @"Waiting for swipe...";
         [self.activityIndicator stopAnimating];
-    } else if (status == kWPCardReaderStatusSwipeDetected) {
+    }
+    else if (status == kWPCardReaderStatusSwipeDetected)
+    {
         self.swiperStatusLabel.text = @"Detected swipe!";
         [self.activityIndicator startAnimating];
-    } else if (status == kWPCardReaderStatusTokenizing) {
+    }
+    else if (status == kWPCardReaderStatusTokenizing)
+    {
         self.swiperStatusLabel.text = @"Tokenizing card";
-    } else if (status == kWPCardReaderStatusStopped) {
+    }
+    else if (status == kWPCardReaderStatusStopped)
+    {
         self.swiperStatusLabel.text = @"Card reader has stopped.";
     }
 }
@@ -123,9 +137,9 @@
     message = [NSString stringWithFormat:@"There was an error processing the card: %@. Please try again.", [error localizedDescription]];
     
     [WCAlert showSimpleAlertFromViewController:self
-                                      withTitle:@"Unable to read card"
+                                     withTitle:@"Unable to read card"
                                        message:message
-                                     completion:nil];
+                                    completion:nil];
     
     [self.donationField setEnabled:YES];
     [self.activityIndicator stopAnimating];
@@ -179,24 +193,28 @@
                                                                     name:nil
                                                                    email:nil
                                                             creditCardID:paymentToken.tokenId
-                                                         completionBlock:^(NSError *error) {
-                                                             if (error) {
-                                                                 NSString *message;
-                                                                 
-                                                                 message = [NSString stringWithFormat:@"There was a server error: %@ Please try again.", [error localizedDescription]];
-                                                                 
-                                                                 [WCAlert showAlertWithOptionFromViewController:self
-                                                                                                       withTitle:@"Unable to complete donation"
-                                                                                                         message:message
-                                                                                                     optionTitle:@"Try Again"
-                                                                                                optionCompletion:^{ [self executeCardRead]; }
-                                                                                                 closeCompletion:^{ [self resetFeedbackUI]; }];
-                                                             } else {
-                                                                 [self.statusBarNotification displayNotificationWithMessage:@"Donation Processed!"
-                                                                                                                forDuration:3.f];
-                                                                 [self pushSignatureView];
-                                                             }
-                                                         }];
+                                                         completionBlock:^(NSError *error)
+    {
+        if (error)
+        {
+            NSString *message;
+
+            message = [NSString stringWithFormat:@"There was a server error: %@ Please try again.", [error localizedDescription]];
+
+            [WCAlert showAlertWithOptionFromViewController:self
+                                                 withTitle:@"Unable to complete donation"
+                                                   message:message
+                                               optionTitle:@"Try Again"
+                                          optionCompletion:^{ [self executeCardRead]; }
+                                           closeCompletion:^{ [self resetFeedbackUI]; }];
+        }
+        else
+        {
+            [self.statusBarNotification displayNotificationWithMessage:@"Donation Processed!"
+                                                        forDuration:3.f];
+            [self pushSignatureView];
+        }
+    }];
     
     [NSTimer scheduledTimerWithTimeInterval:10
                                      target:self
@@ -229,9 +247,12 @@
 
 - (void) toggleWaitingActivity:(BOOL) waiting
 {
-    if (waiting) {
+    if (waiting)
+    {
         [self.activityIndicator startAnimating];
-    } else {
+    }
+    else
+    {
         [self.activityIndicator stopAnimating];
     }
     

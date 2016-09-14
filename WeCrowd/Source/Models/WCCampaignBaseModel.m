@@ -22,14 +22,12 @@
 
 @implementation WCCampaignBaseModel
 
-- (instancetype) initWithCampaign:(NSString *) campaign
-                            title:(NSString *) title
+- (instancetype) initWithCampaign:(NSString *) campaign title:(NSString *) title
 {
-    if (self = [super init]) {
+    if (self = [super init])
+    {
         self.campaignID = campaign;
         self.title = title;
-    } else {
-        // Do nothing
     }
     
     return self;

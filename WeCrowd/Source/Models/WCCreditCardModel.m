@@ -34,7 +34,8 @@
                            zipCode:(NSString *) zipCode
                     expirationDate:(NSDate *) expirationDate
 {
-    if (self = [super init]) {
+    if (self = [super init])
+    {
         self.firstName = firstName;
         self.lastName = lastName;
         self.fullName = [firstName stringByAppendingString:[NSString stringWithFormat:@" %@", lastName]];
@@ -42,8 +43,6 @@
         self.cvvNumber = cvvNumber;
         self.zipCode = zipCode;
         self.expirationDate = expirationDate;
-    } else {
-        // Do nothing
     }
     
     return self;

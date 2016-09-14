@@ -29,14 +29,13 @@
                           email:(NSString *) email
                           token:(NSString *) token
 {
-    if (self = [super init]) {
+    if (self = [super init])
+    {
         self.userID = userID;
         self.displayName = displayName;
         self.canonicalName = [displayName lowercaseString];
         self.email = email;
         self.token = token;
-    } else {
-        // do nothing
     }
     
     return self;

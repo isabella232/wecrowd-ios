@@ -18,14 +18,13 @@
                        creditCardID:(NSString *) creditCardID
                              amount:(NSString *) amount
 {
-    if (self = [super init]) {
+    if (self = [super init])
+    {
         self.campaignID = campaignID;
         self.donatorName = donatorName;
         self.donatorEmail = donatorEmail;
         self.creditCardID = creditCardID;
         self.amount = amount;
-    } else {
-        // Do nothing
     }
     
     return self;

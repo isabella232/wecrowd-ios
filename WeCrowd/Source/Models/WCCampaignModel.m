@@ -10,4 +10,18 @@
 
 @implementation WCCampaignModel
 
+- (instancetype) initWithIdentifier:(NSString *) identifier
+                              title:(NSString *) title
+                               goal:(CGFloat) goal
+{
+    if (self = [super init])
+    {
+        self.identifier = identifier;
+        self.title = title;
+        self.donationTargetAmount = goal;
+    }
+    
+    return self;
+}
+
 @end

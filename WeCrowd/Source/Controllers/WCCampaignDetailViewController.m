@@ -101,7 +101,7 @@
         [self pushViewControllerWithIdentifier:NSStringFromClass([WCManualPaymentViewController class]) forStoryboard:paymentStoryboard];
     }
     
-    [[WCDonationManager sharedManager] configureDonationForCampaignID:self.campaignDetail.campaignID];
+    [[WCDonationManager sharedManager] configureDonationForCampaignID:self.campaignDetail.identifier];
 }
 
 #pragma mark - Helper Methods
@@ -196,7 +196,7 @@
 
             // Configure the UI
             self.titleLabel.text = self.campaignDetail.title;
-            self.campaignImage.image = self.campaignDetail.detailImage;
+            self.campaignImage.image = self.campaignDetail.image;
             self.campaignDonationProgress.text = [NSString stringWithFormat:@"%.f", donationProgress * 100];
             self.campaignDonationProgress.text = [self.campaignDonationProgress.text stringByAppendingString:@"% funded"];
             self.campaignDonationProgressBar.progress = donationProgress;

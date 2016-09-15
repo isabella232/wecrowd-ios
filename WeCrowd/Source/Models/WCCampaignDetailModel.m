@@ -20,9 +20,9 @@
                       detailImage:(UIImage *) detailImage
                 detailDescription:(NSString *) detailDescription
 {
-    if (self = [super initWithCampaign:campaign title:title])
+    if (self = [super init])
     {
-        self.detailImage = detailImage;
+        self.image = detailImage;
         self.detailDescription = detailDescription;
         self.dateEnd = endDate;
         self.donationTargetAmount = donationTarget;

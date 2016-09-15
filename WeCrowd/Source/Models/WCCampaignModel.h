@@ -11,15 +11,15 @@
 
 @interface WCCampaignModel : NSObject
 
-@property (nonatomic, strong) NSString* campaignID;
+@property (nonatomic, strong) NSString* identifier;
 @property (nonatomic, strong) NSString* title;
 @property (nonatomic, strong) NSString* detailDescription;
 
 @property (nonatomic) CGFloat donationTargetAmount;
 @property (nonatomic) CGFloat donationAmount;
 
-@property (nonatomic, strong) NSString* thumbnailImageURLString;
-@property (nonatomic, strong) UIImage* thumbnailImage;
+@property (nonatomic, strong) NSString* imageURL;
+@property (nonatomic, strong) UIImage* image;
 
 @property (nonatomic, strong) NSDate* dateEnd;
 

@@ -13,8 +13,6 @@
 #import "WCUserModel.h"
 #import "WCError.h"
 
-@class WCCampaignBaseModel;
-
 #pragma mark - Constants
 
 // Requests

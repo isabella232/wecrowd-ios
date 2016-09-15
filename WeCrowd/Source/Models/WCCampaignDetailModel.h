@@ -7,18 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WCCampaignBaseModel.h"
+#import "WCCampaignModel.h"
 
-@class WCCampaignBaseModel, UIImage;
+@class UIImage;
 
-@interface WCCampaignDetailModel : WCCampaignBaseModel
-
-@property (nonatomic, strong) UIImage* detailImage;
-@property (nonatomic, strong) NSString* detailDescription;
-@property (nonatomic, strong) NSDate * dateEnd;
-
-@property (nonatomic) CGFloat donationTargetAmount;
-@property (nonatomic) CGFloat donationAmount;
+@interface WCCampaignDetailModel : WCCampaignModel
 
 - (instancetype) initWithCampaign:(NSString *) campaign
                             title:(NSString *) title

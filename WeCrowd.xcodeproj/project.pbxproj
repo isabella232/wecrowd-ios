@@ -30,6 +30,7 @@
 		C396765F1B2A5AD30071CEB5 /* WCCampaignDonationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C396765E1B2A5AD30071CEB5 /* WCCampaignDonationModel.m */; };
 		C39676621B2A5B430071CEB5 /* WCUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C39676611B2A5B430071CEB5 /* WCUserModel.m */; };
 		C39C9B4F1B34B8E900C5E9A7 /* WCClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C39C9B4E1B34B8E900C5E9A7 /* WCClient.m */; };
+		C3A8BA5D1D8B5744003EAF10 /* WCCampaignModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A8BA5C1D8B5744003EAF10 /* WCCampaignModel.m */; };
 		C3D610A01B3E0314005D188F /* WCWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D6109F1B3E0314005D188F /* WCWelcomeViewController.m */; };
 		C3D610A31B3E0C1A005D188F /* WCConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D610A21B3E0C1A005D188F /* WCConstants.m */; };
 		C3D610A71B3E1D7C005D188F /* WCCampaignTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3D610A61B3E1D7C005D188F /* WCCampaignTableViewCell.m */; };
@@ -99,6 +100,8 @@
 		C39676611B2A5B430071CEB5 /* WCUserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCUserModel.m; path = Source/Models/WCUserModel.m; sourceTree = "<group>"; };
 		C39C9B4D1B34B8E900C5E9A7 /* WCClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCClient.h; path = Source/Internal/WCClient.h; sourceTree = "<group>"; };
 		C39C9B4E1B34B8E900C5E9A7 /* WCClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCClient.m; path = Source/Internal/WCClient.m; sourceTree = "<group>"; };
+		C3A8BA5B1D8B5744003EAF10 /* WCCampaignModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCCampaignModel.h; path = Source/Models/WCCampaignModel.h; sourceTree = "<group>"; };
+		C3A8BA5C1D8B5744003EAF10 /* WCCampaignModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCCampaignModel.m; path = Source/Models/WCCampaignModel.m; sourceTree = "<group>"; };
 		C3B6E68D1D80DF3E0088788A /* TrustDefenderMobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TrustDefenderMobile.framework; path = "../../Downloads/wepay-ios-5.0.0/TrustDefenderMobile.framework"; sourceTree = "<group>"; };
 		C3D6109E1B3E0314005D188F /* WCWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCWelcomeViewController.h; path = Source/Controllers/WCWelcomeViewController.h; sourceTree = "<group>"; };
 		C3D6109F1B3E0314005D188F /* WCWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCWelcomeViewController.m; path = Source/Controllers/WCWelcomeViewController.m; sourceTree = "<group>"; };
@@ -296,6 +299,8 @@
 				C396765E1B2A5AD30071CEB5 /* WCCampaignDonationModel.m */,
 				C39676601B2A5B430071CEB5 /* WCUserModel.h */,
 				C39676611B2A5B430071CEB5 /* WCUserModel.m */,
+				C3A8BA5B1D8B5744003EAF10 /* WCCampaignModel.h */,
+				C3A8BA5C1D8B5744003EAF10 /* WCCampaignModel.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -558,6 +563,7 @@
 				C39676561B2A4D5A0071CEB5 /* WCCampaignHeaderModel.m in Sources */,
 				C32FABF21B44A614005C34AB /* WCDonationManager.m in Sources */,
 				C3060E0D1B2652D500A9F596 /* WCLoginViewController.m in Sources */,
+				C3A8BA5D1D8B5744003EAF10 /* WCCampaignModel.m in Sources */,
 				C31B7F0F1B5701E7006689C3 /* WCSignatureViewController.m in Sources */,
 				C3EC4BB11B4306560005B1B9 /* WCPaymentManager.m in Sources */,
 				C39676591B2A53AE0071CEB5 /* WCCampaignDetailModel.m in Sources */,

@@ -19,6 +19,8 @@
 
 // Requests
 static NSInteger const kTimeoutInterval = 5;
+static NSInteger const kStatusCodeSuccess = 200;
+
 static NSString* const kHTTPRequestPost = @"POST";
 static NSString* const kHTTPRequestGet  = @"GET";
 
@@ -244,10 +246,14 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
          }
          else
          {
-             [self processResponse:response
-                              data:data
-                      successBlock:successHandler
-                      errorHandler:errorHandler];
+             id requestObject;
+             requestObject = [WCClient objectFromResponse:response
+                                                 withData:data];
+             
+             if (requestObject)
+             {
+                 successHandler(requestObject);
+             }
          }
      }];
 }
@@ -295,17 +301,17 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
 
 #pragma mark - Data Processing
 
-+ (void) processResponse:(NSURLResponse *) response
-                    data:(NSData *) data
-            successBlock:(void (^)(id returnData)) successHandler
-            errorHandler:(void (^)(NSError* error)) errorHandler
++ (id) objectFromResponse:(NSURLResponse *) response
+                 withData:(NSData *) data
 {
     NSError *extractionError;
+    NSInteger statusCode;
+    id extractedData;
     
     // Build a structure from the raw data
-    id extractedData = nil;
+    statusCode = [(NSHTTPURLResponse *) response statusCode];
     
-    if (data.length > 0)
+    if (statusCode == kStatusCodeSuccess)
     {
         // Try to extract JSON data first
         extractedData = [NSJSONSerialization JSONObjectWithData:data
@@ -315,39 +321,20 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
         {
             // If JSON extraction fails, try to extract binary data
             // For now, only image case is handled
-            // (This really should be in a separate method, but I'm in too deep atm =/)
             extractedData = [UIImage imageWithData:data];
         }
     }
-    
-    if (extractedData)
+    else
     {
-        // Safely retrieve the status code since there were no errors and the data is valid
-        NSInteger statusCode = [(NSHTTPURLResponse *) response statusCode];
+        NSString *description;
         
-        // Check the status code. 200 means success
-        if (statusCode == 200)
-        {
-            successHandler(extractedData);
-        }
-        else
-        {
-            NSDictionary *userInfo;
-            NSString *description;
-            
-            description = [NSString stringWithFormat:@"Error: Client: Unable to process request %@.", response.URL.path];
-            userInfo =  @{ NSLocalizedDescriptionKey : NSLocalizedString(description, nil) };
-            
-            errorHandler([NSError errorWithDomain:NSURLErrorDomain
-                                             code:statusCode
-                                         userInfo:userInfo]);
-        }
+        description = [NSString stringWithFormat:@"Client: Error %zd: Client: Unable to process request %@.", statusCode, response.URL.path];
+        NSLog(@"%@", description);
+        
+        extractedData = nil;
     }
-    else if (extractionError)
-    {
-        errorHandler(extractionError);
-        NSLog(@"Error: Client: %@.", [extractionError localizedDescription]);
-    }
+    
+    return extractedData;
 }
 
 #pragma mark - Asset Fetching

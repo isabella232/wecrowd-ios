@@ -27,6 +27,9 @@ static NSString* const kHTTPRequestGet  = @"GET";
 // API
 static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appspot.com/api";
 
+// Typedefs
+typedef void (^WCFetchBlock) (id returnData, NSError * error);
+
 #pragma mark - Implementation
 
 @implementation WCClient
@@ -40,31 +43,33 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
     [self makePostRequestToEndPoint:[self apiURLWithEndpoint:kAPIEndpointLogin]
                              values:@{ kAPIEmailKey : username, kAPIPasswordKey : password }
                         accessToken:nil
-                       successBlock:^(NSDictionary *returnData)
+                       completionBlock:^(id returnData, NSError *error)
     {
-        // Check the status of the return data
-        if ([returnData objectForKey:kAPIParameterErrorCode])
+        if (error)
         {
-            NSError *APIError;
-
-            APIError = [WCError APIErrorWithDescription:@"API error for login."
-                                         serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
-                                              codeData:returnData];
-
-            completionBlock(nil, APIError);
-            NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
+            // This means there was either a connection error or a parse error
+            completionBlock(nil, error);
         }
         else
         {
-           // No error code, so hand off the data
-           completionBlock(returnData, nil);
+            // Check the status of the return data
+            if ([returnData objectForKey:kAPIParameterErrorCode])
+            {
+                NSError *APIError;
+                
+                APIError = [WCError APIErrorWithDescription:@"API error for login."
+                                              serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
+                                                   codeData:returnData];
+                
+                completionBlock(nil, APIError);
+                NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
+            }
+            else
+            {
+                // No error code, so hand off the data
+                completionBlock(returnData, nil);
+            }
         }
-    }
-                       // This bit looks confusing, but errorHandler is the final argument of the post request.
-                       errorHandler:^(NSError *error)
-    {
-        // This means there was either a connection error or a parse error
-        completionBlock(nil, error);
     }];
 }
 
@@ -83,33 +88,36 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
      [self makePostRequestToEndPoint:[self apiURLWithEndpoint:kAPIEndpointDonate]
                               values:values
                          accessToken:nil
-                        successBlock:^(id returnData)
+                        completionBlock:^(id returnData, NSError *error)
     {
-        // Check for an API error
-        if ([returnData objectForKey:kAPIParameterErrorCode])
+        if (error)
         {
-            NSError *APIError;
-            
-            APIError = [WCError APIErrorWithDescription:@"API error for donation."
-                                          serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
-                                               codeData:returnData];
-            
-            completionBlock(nil, APIError);
-            NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
+            // This means there was either a connection error or a parse error
+            completionBlock(nil, error);
+            NSLog(@"Error: Client: %@", [error localizedDescription]);
         }
         else
         {
-            // No error code, so hand off the data
-            NSNumber *checkoutIDNum = [returnData objectForKey:@"checkout_id"];
-            
-            completionBlock([checkoutIDNum stringValue], nil);
+            // Check for an API error
+            if ([returnData objectForKey:kAPIParameterErrorCode])
+            {
+                NSError *APIError;
+                
+                APIError = [WCError APIErrorWithDescription:@"API error for donation."
+                                              serverMessage:[returnData objectForKey:kAPIParameterErrorMessage]
+                                                   codeData:returnData];
+                
+                completionBlock(nil, APIError);
+                NSLog(@"Error: API: %@.", [returnData objectForKey:kAPIParameterErrorMessage]);
+            }
+            else
+            {
+                // No error code, so hand off the data
+                NSNumber *checkoutIDNum = [returnData objectForKey:@"checkout_id"];
+                
+                completionBlock([checkoutIDNum stringValue], nil);
+            }
         }
-    }
-                        errorHandler:^(NSError *error)
-    {
-        // This means there was either a connection error or a parse error
-        completionBlock(nil, error);
-        NSLog(@"Error: Client: Unable to complete donation.");
     }];
 }
 
@@ -117,13 +125,16 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
 {
     [self makeGetRequestToEndpoint:[self apiURLWithEndpoint:kAPIEndpointCampaigns]
                        accessToken:nil
-                      successBlock:^(NSArray *returnData)
+                      completionBlock:^(id returnData, NSError *error)
     {
-        completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
-    }
-                      errorHandler:^(NSError *error)
-    {
-        completionBlock(nil, error);
+        if (error)
+        {
+            completionBlock(nil, error);
+        }
+        else
+        {
+            completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
+        }
     }];
 }
 
@@ -134,15 +145,18 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
     [self makePostRequestToEndPoint:[self apiURLWithEndpoint:kAPIEndpointUsers]
                              values:@{ kAPIUserIDKey : userID, kAPIUserTokenKey : token }
                         accessToken:nil
-                       successBlock:^(NSArray *returnData)
+                       completionBlock:^(id returnData, NSError *error)
     {
-        NSLog(@"Success: Client: Fetched campaigns for user.");
-        completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
-    }
-                       errorHandler:^(NSError *error)
-    {
-        NSLog(@"Error: Client: failed to fetch user campaigns.");
-        completionBlock(nil, error);
+        if (error)
+        {
+            NSLog(@"Error: Client: failed to fetch user campaigns.");
+            completionBlock(nil, error);
+        }
+        else
+        {
+            NSLog(@"Success: Client: Fetched campaigns for user.");
+            completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
+        }
     }];
 }
 
@@ -150,14 +164,17 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
 {
     [self makeGetRequestToEndpoint:[self apiURLWithEndpoint:kAPIEndpointFeaturedCampaigns]
                        accessToken:nil
-                      successBlock:^(id returnData)
+                   completionBlock:^(id returnData, NSError *error)
     {
-        NSLog(@"Success: Client: Fetched featured campaigns.");
-        completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
-    }
-                      errorHandler:^(NSError *error)
-    {
-        completionBlock(nil, error);
+        if (error)
+        {
+            completionBlock(nil, error);
+        }
+        else
+        {
+            NSLog(@"Success: Client: Fetched featured campaigns.");
+            completionBlock([WCModelProcessor createProcessedArrayForCampaigns:returnData], nil);
+        }
     }];
 }
 
@@ -168,23 +185,26 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
     NSMutableString *URLString = [kAPIEndpointCampaigns mutableCopy];
     [URLString appendString:[NSString stringWithFormat:@"/%@", campaignID]];
     
-    [self makeGetRequestToEndpoint:[self apiURLWithEndpoint:URLString]
-                       accessToken:nil
-                      successBlock:^(id returnData)
+    [WCClient makeGetRequestToEndpoint:[self apiURLWithEndpoint:URLString]
+                           accessToken:nil
+                       completionBlock:^(id returnData, NSError *error)
     {
-        NSLog(@"Success: Client: Fetched campaign.");
-      
-        [WCModelProcessor createCampaignDetailFromDictionary:returnData
-                                                  completion:^(WCCampaignDetailModel *model, NSError *error)
-      
+        if (error)
         {
-            completionBlock(model, error);
-        }];
-    }
-                      errorHandler:^(NSError *error)
-    {
-        NSLog(@"Error: Client: Unable to fetch campaign.");
-        completionBlock(nil, error);
+            NSLog(@"Error: Client: Unable to fetch campaign.");
+            completionBlock(nil, error);
+        }
+        else
+        {
+            NSLog(@"Success: Client: Fetched campaign.");
+            
+            [WCModelProcessor createCampaignDetailFromDictionary:returnData
+                                                      completion:^(WCCampaignDetailModel *model, NSError *error)
+             
+            {
+                completionBlock(model, error);
+            }];
+        }
     }];
 }
 
@@ -193,37 +213,34 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
 + (void) makePostRequestToEndPoint:(NSURL *) endpoint
                             values:(NSDictionary *) params
                        accessToken:(NSString *) accessToken
-                      successBlock:(void (^)(id returnData)) successHandler
-                      errorHandler:(void (^)(NSError * error)) errorHandler
+                   completionBlock:(WCFetchBlock) completionHandler
 {
-    [self makeRequestToEndPoint:endpoint
-                         method:kHTTPRequestPost
-                         values:params
-                    accessToken:accessToken
-                   successBlock:successHandler
-                   errorHandler:errorHandler];
+    [WCClient makeRequestToEndPoint:endpoint
+                             method:kHTTPRequestPost
+                             values:params
+                        accessToken:accessToken
+                    completionBlock:completionHandler];
 }
 
 + (void) makeGetRequestToEndpoint:(NSURL *) endpoint
                       accessToken:(NSString *) accessToken
-                     successBlock:(void (^)(id returnData)) successHandler
-                     errorHandler:(void (^)(NSError *)) errorHandler
+                  completionBlock:(WCFetchBlock) completionHandler
 {
-    [self makeRequestToEndPoint:endpoint
-                         method:kHTTPRequestGet
-                         values:nil
-                    accessToken:accessToken
-                   successBlock:successHandler
-                   errorHandler:errorHandler];
+    [WCClient makeRequestToEndPoint:endpoint
+                             method:kHTTPRequestGet
+                             values:nil
+                        accessToken:accessToken
+                    completionBlock:completionHandler];
 }
 
-// TODO: change this so that there is only one result block that includes an error parameter.
+#pragma mark - Helpers
+
+// Central request method used to communicate with the remote API
 + (void) makeRequestToEndPoint:(NSURL *) endpoint
                         method:(NSString *) method
                         values:(NSDictionary *) params
                    accessToken:(NSString *) accessToken
-                  successBlock:(void (^)(id returnData)) successHandler
-                  errorHandler:(void (^)(NSError * error)) errorHandler
+               completionBlock:(WCFetchBlock) completionHandler
 {
     NSMutableURLRequest *returnRequest;
     
@@ -247,19 +264,18 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
          else
          {
              id requestObject;
-             requestObject = [WCClient objectFromResponse:response
-                                                 withData:data];
+             NSError *responseError = nil;
              
-             if (requestObject)
-             {
-                 successHandler(requestObject);
-             }
+             requestObject = [WCClient objectFromResponse:response
+                                                 withData:data
+                                                    error:&responseError];
+             
+             completionHandler(requestObject, responseError);
          }
      }];
 }
 
-#pragma mark - Helpers
-
+// Convenience method to create a URL request that can be sent to the remote API
 + (NSMutableURLRequest *) createRequestWithURL:(NSURL *) URL
                                         method:(NSString *) method
                                       bodyData:(id) bodyData
@@ -303,6 +319,7 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
 
 + (id) objectFromResponse:(NSURLResponse *) response
                  withData:(NSData *) data
+                    error:(NSError **) error
 {
     NSError *extractionError;
     NSInteger statusCode;
@@ -326,9 +343,16 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
     }
     else
     {
+        NSDictionary *userInfo;
         NSString *description;
         
-        description = [NSString stringWithFormat:@"Client: Error %zd: Client: Unable to process request %@.", statusCode, response.URL.path];
+        description = [NSString stringWithFormat:@"Error: Client: Unable to process request %@.", response.URL.path];
+        userInfo =  @{ NSLocalizedDescriptionKey : NSLocalizedString(description, nil) };
+        
+        *error = [NSError errorWithDomain:NSURLErrorDomain
+                                     code:statusCode
+                                 userInfo:userInfo];
+        
         NSLog(@"%@", description);
         
         extractedData = nil;
@@ -344,13 +368,16 @@ static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appsp
 {
     [self makeGetRequestToEndpoint:[NSURL URLWithString:URLString]
                        accessToken:nil
-                      successBlock:^(id returnData)
+                      completionBlock:^(id returnData, NSError *error)
     {
-        completionBlock(returnData, nil);
-    }
-    errorHandler:^(NSError *error)
-    {
-        completionBlock(nil, error);
+        if (error)
+        {
+            completionBlock(nil, error);
+        }
+        else
+        {
+            completionBlock(returnData, nil);
+        }
     }];
 }
 

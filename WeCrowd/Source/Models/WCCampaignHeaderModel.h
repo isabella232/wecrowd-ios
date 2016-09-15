@@ -12,8 +12,8 @@
 
 @interface WCCampaignHeaderModel : WCCampaignBaseModel
 
-@property (nonatomic, strong, readonly) NSString *thumbnailImageURLString;
-@property (nonatomic, strong, readonly) UIImage *thumbnailImage;
+@property (nonatomic, strong) NSString *thumbnailImageURLString;
+@property (nonatomic, strong) UIImage *thumbnailImage;
 
 - (instancetype) initWithCampaign:(NSString *) campaign
                             title:(NSString *) title

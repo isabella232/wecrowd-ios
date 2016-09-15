@@ -11,8 +11,8 @@
 
 @interface WCCampaignBaseModel : NSObject
 
-@property (nonatomic, strong, readonly) NSString * campaignID;
-@property (nonatomic, strong, readonly) NSString * title;
+@property (nonatomic, strong) NSString * campaignID;
+@property (nonatomic, strong) NSString * title;
 
 - (instancetype) initWithCampaign:(NSString *) campaign
                             title:(NSString *) title;

@@ -9,15 +9,6 @@
 #import "WCCampaignHeaderModel.h"
 #import "WCClient.h"
 
-#pragma mark - Interface
-
-@interface WCCampaignHeaderModel ()
-
-@property (nonatomic, strong, readwrite) UIImage *thumbnailImage;
-@property (nonatomic, strong, readwrite) NSString *thumbnailImageURLString;
-
-@end
-
 #pragma mark - Implementation
 
 @implementation WCCampaignHeaderModel

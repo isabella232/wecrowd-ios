@@ -8,20 +8,6 @@
 
 #import "WCCampaignDetailModel.h"
 
-#pragma mark - Interface
-
-@interface WCCampaignDetailModel ()
-
-@property (nonatomic, strong, readwrite) UIImage* detailImage;
-@property (nonatomic, strong, readwrite) NSString* detailDescription;
-@property (nonatomic, strong, readwrite) NSDate * dateEnd;
-
-@property (nonatomic, readwrite) CGFloat donationTargetAmount;
-@property (nonatomic, readwrite) CGFloat donationAmount;
-
-@end
-
-
 #pragma mark - Implementation
 
 @implementation WCCampaignDetailModel

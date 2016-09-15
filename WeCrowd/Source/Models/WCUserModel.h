@@ -12,11 +12,11 @@
 
 @interface WCUserModel : NSObject
 
-@property (nonatomic, strong, readonly) NSString* userID;
-@property (nonatomic, strong, readonly) NSString* displayName;
-@property (nonatomic, strong, readonly) NSString* canonicalName;
-@property (nonatomic, strong, readonly) NSString* email;
-@property (nonatomic, strong, readonly) NSString* token;
+@property (nonatomic, strong) NSString* userID;
+@property (nonatomic, strong) NSString* displayName;
+@property (nonatomic, strong) NSString* canonicalName;
+@property (nonatomic, strong) NSString* email;
+@property (nonatomic, strong) NSString* token;
 
 - (instancetype) initWithUserID:(NSString *) userID
                     displayName:(NSString *) displayName

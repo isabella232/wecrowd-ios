@@ -13,12 +13,12 @@
 
 @interface WCCampaignDetailModel : WCCampaignBaseModel
 
-@property (nonatomic, strong, readonly) UIImage* detailImage;
-@property (nonatomic, strong, readonly) NSString* detailDescription;
-@property (nonatomic, strong, readonly) NSDate * dateEnd;
+@property (nonatomic, strong) UIImage* detailImage;
+@property (nonatomic, strong) NSString* detailDescription;
+@property (nonatomic, strong) NSDate * dateEnd;
 
-@property (nonatomic, readonly) CGFloat donationTargetAmount;
-@property (nonatomic, readonly) CGFloat donationAmount;
+@property (nonatomic) CGFloat donationTargetAmount;
+@property (nonatomic) CGFloat donationAmount;
 
 - (instancetype) initWithCampaign:(NSString *) campaign
                             title:(NSString *) title

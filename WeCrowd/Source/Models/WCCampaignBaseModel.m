@@ -8,16 +8,6 @@
 
 #import "WCCampaignBaseModel.h"
 
-#pragma mark - Interface
-
-@interface WCCampaignBaseModel ()
-
-@property (nonatomic, strong, readwrite) NSString * campaignID;
-@property (nonatomic, strong, readwrite) NSString * title;
-
-@end
-
-
 #pragma mark - Implementation
 
 @implementation WCCampaignBaseModel

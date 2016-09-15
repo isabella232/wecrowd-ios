@@ -76,7 +76,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 {
     WCCampaignHeaderModel *selectedCampaign = (WCCampaignHeaderModel *) [self.campaigns objectAtIndex:indexPath.row];
     
-    self.selectedCampaignID = selectedCampaign.campaignID;
+    self.selectedCampaignID = selectedCampaign.identifier;
     
     [self performSegueWithIdentifier:kIBSegueCampaignFeedToCampaignDetail sender:self];
     

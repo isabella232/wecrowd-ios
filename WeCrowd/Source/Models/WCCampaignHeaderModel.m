@@ -17,9 +17,11 @@
                             title:(NSString *) title
                    imageURLString:(NSString *) imageURLString
 {
-    if (self = [super initWithCampaign:campaign title:title])
+    if (self = [super init])
     {
-        self.thumbnailImageURLString = imageURLString;
+        self.identifier = campaign;
+        self.title = title;
+        self.imageURL = imageURLString;
     }
     
     return self;
@@ -28,18 +30,18 @@
 - (void) fetchImageIfNeededWithCompletion:(void (^)(UIImage *image, NSError *error)) completion
 {
     // Only fetch the image if one isn't already stored
-    if (!self.thumbnailImage)
+    if (!self.image)
     {
-        [WCClient fetchImageWithURLString:self.thumbnailImageURLString
+        [WCClient fetchImageWithURLString:self.imageURL
                           completionBlock:^(UIImage *image, NSError *error)
         {
-            self.thumbnailImage = image;
+            self.image = image;
             completion(image, error);
         }];
     }
     else
     {
-        completion(self.thumbnailImage, nil);
+        completion(self.image, nil);
     }
 }
 

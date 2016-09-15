@@ -8,12 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "WCCampaignBaseModel.h"
+#import "WCCampaignModel.h"
 
-@interface WCCampaignHeaderModel : WCCampaignBaseModel
-
-@property (nonatomic, strong) NSString *thumbnailImageURLString;
-@property (nonatomic, strong) UIImage *thumbnailImage;
+@interface WCCampaignHeaderModel : WCCampaignModel
 
 - (instancetype) initWithCampaign:(NSString *) campaign
                             title:(NSString *) title

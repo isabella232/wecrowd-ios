@@ -23,7 +23,7 @@ static NSString* const kHTTPRequestPost = @"POST";
 static NSString* const kHTTPRequestGet  = @"GET";
 
 // API
-static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
+static NSString* const kAPIURLString = @"https://wecrowd-dot-partner-demos.appspot.com/api";
 
 #pragma mark - Implementation
 
@@ -223,45 +223,41 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
                   successBlock:(void (^)(id returnData)) successHandler
                   errorHandler:(void (^)(NSError * error)) errorHandler
 {
-    [self createDefaultRequestWithURL:endpoint
-                               method:method
-                             bodyData:params
-                          accessToken:accessToken
-                      completionBlock:^(NSMutableURLRequest *returnRequest, NSError *error)
-    {
-        if (error)
-        {
-          // Encountered a parse error while creating the request
-          errorHandler(error);
-        }
-        else
-        {
-          // Request was successfully created
-          NSOperationQueue* queue = [NSOperationQueue mainQueue];
-          
-          // Send the request asynchronously and process the response
-          [NSURLConnection sendAsynchronousRequest:returnRequest
-                                             queue:queue
-                                 completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
-          {
-              // Process the server's response
-              [self processResponse:response
-                               data:data
-                              error:connectionError
-                       successBlock:successHandler
-                       errorHandler:errorHandler];
-          }];
-        }
-    }];
+    NSMutableURLRequest *returnRequest;
+    
+    returnRequest = [WCClient createRequestWithURL:endpoint
+                                            method:method
+                                          bodyData:params
+                                       accessToken:accessToken];
+    
+    // Send the request asynchronously and process the response
+    [NSURLConnection sendAsynchronousRequest:returnRequest
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response,
+                                               NSData *data,
+                                               NSError *connectionError)
+     {
+         // Process the server's response
+         if (connectionError)
+         {
+             NSLog(@"ConnectionError: Client: %@.", [connectionError localizedDescription]);
+         }
+         else
+         {
+             [self processResponse:response
+                              data:data
+                      successBlock:successHandler
+                      errorHandler:errorHandler];
+         }
+     }];
 }
 
 #pragma mark - Helpers
 
-+ (void) createDefaultRequestWithURL:(NSURL *) URL
-                              method:(NSString *) method
-                            bodyData:(id) bodyData
-                         accessToken:(NSString *) accessToken
-                     completionBlock:(void (^)(NSMutableURLRequest *returnRequest, NSError * error)) completion
++ (NSMutableURLRequest *) createRequestWithURL:(NSURL *) URL
+                                        method:(NSString *) method
+                                      bodyData:(id) bodyData
+                                   accessToken:(NSString *) accessToken
 {
     NSError *parseError = nil;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL
@@ -285,16 +281,11 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
         [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:bodyData
                                                              options:kNilOptions
                                                                error:&parseError]];
+        
+        NSAssert(!parseError, @"WCClient: Unable to process body data with error: %@", [parseError localizedDescription]);
     }
-    
-    if (parseError)
-    {
-        completion(nil, parseError);
-    }
-    else
-    {
-        completion(request, nil);
-    }
+
+    return request;
 }
 
 + (NSURL *) apiURLWithEndpoint:(NSString *) endpoint
@@ -306,7 +297,6 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
 
 + (void) processResponse:(NSURLResponse *) response
                     data:(NSData *) data
-                   error:(NSError *) error
             successBlock:(void (^)(id returnData)) successHandler
             errorHandler:(void (^)(NSError* error)) errorHandler
 {
@@ -315,7 +305,7 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
     // Build a structure from the raw data
     id extractedData = nil;
     
-    if ([data length] > 0)
+    if (data.length > 0)
     {
         // Try to extract JSON data first
         extractedData = [NSJSONSerialization JSONObjectWithData:data
@@ -330,7 +320,7 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
         }
     }
     
-    if (extractedData && !error)
+    if (extractedData)
     {
         // Safely retrieve the status code since there were no errors and the data is valid
         NSInteger statusCode = [(NSHTTPURLResponse *) response statusCode];
@@ -352,11 +342,6 @@ static NSString* const kAPIURLString = @"http://wecrowd.wepay.com/api";
                                              code:statusCode
                                          userInfo:userInfo]);
         }
-    }
-    else if (error)
-    {
-        errorHandler(error);
-        NSLog(@"Error: Client: %@.", [error localizedDescription]);
     }
     else if (extractionError)
     {

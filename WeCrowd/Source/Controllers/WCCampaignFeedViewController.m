@@ -70,6 +70,18 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
     
     [cell configureForCampaignHeader:model];
     
+    if (!model.image)
+    {
+        [WCClient fetchCampaignWithID:model.identifier
+                      completionBlock:^(WCCampaignModel *campaign, NSError *error)
+         {
+             if (campaign)
+             {
+                 [cell updateWithCampaign:campaign];
+             }
+         }];
+    }
+    
     return cell;
 }
 
@@ -101,7 +113,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 #pragma mark - Helper Methods
 
-- (void) fetchCampaignsWithCompletionCallback:(void (^)(NSError *error)) completion
+- (void) fetchCampaignsWithCompletionCallback:(nullable void (^)(NSError *error)) completion
 {
     [WCClient fetchAllCampaigns:^(NSArray *campaigns, NSError *error)
     {
@@ -126,7 +138,10 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
             [self.tableView reloadData];
         }
         
-        completion(error);
+        if (completion)
+        {
+            completion(error);
+        }
     }];
 }
 

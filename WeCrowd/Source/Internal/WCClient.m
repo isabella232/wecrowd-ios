@@ -13,8 +13,6 @@
 #import "WCUserModel.h"
 #import "WCError.h"
 
-@class WCCampaignBaseModel;
-
 #pragma mark - Constants
 
 // Requests
@@ -179,7 +177,7 @@ typedef void (^WCFetchBlock) (id returnData, NSError * error);
 }
 
 + (void) fetchCampaignWithID:(NSString *) campaignID
-             completionBlock:(WCCampaignDetailReturnBlock) completionBlock
+             completionBlock:(WCCampaignModelReturnBlock) completionBlock
 {
     // Get the full URL Endpoint
     NSMutableString *URLString = [kAPIEndpointCampaigns mutableCopy];
@@ -199,7 +197,7 @@ typedef void (^WCFetchBlock) (id returnData, NSError * error);
             NSLog(@"Success: Client: Fetched campaign.");
             
             [WCModelProcessor createCampaignDetailFromDictionary:returnData
-                                                      completion:^(WCCampaignDetailModel *model, NSError *error)
+                                                      completion:^(WCCampaignModel *model, NSError *error)
              
             {
                 completionBlock(model, error);

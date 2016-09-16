@@ -8,16 +8,6 @@
 
 #import "WCUserModel.h"
 
-@interface WCUserModel ()
-
-@property (nonatomic, strong, readwrite) NSString* userID;
-@property (nonatomic, strong, readwrite) NSString* displayName;
-@property (nonatomic, strong, readwrite) NSString* canonicalName;
-@property (nonatomic, strong, readwrite) NSString* email;
-@property (nonatomic, strong, readwrite) NSString* token;
-
-@end
-
 #pragma mark - Implementation
 
 @implementation WCUserModel

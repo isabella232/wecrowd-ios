@@ -7,7 +7,7 @@
 //
 
 #import "WCCampaignTableViewCell.h"
-#import "WCCampaignHeaderModel.h"
+#import "WCCampaignModel.h"
 
 @interface WCCampaignTableViewCell ()
 
@@ -26,7 +26,7 @@ static float const kCellBorderWidth = 0.5f;
 
 #pragma mark - Interface
 
-- (void) configureForCampaignHeader:(WCCampaignHeaderModel *) model
+- (void) configureForCampaignHeader:(WCCampaignModel *) model
 {
     NSDateFormatter* standardDateFormat = [NSDateFormatter new];
     NSString* timeRemaining;
@@ -42,11 +42,12 @@ static float const kCellBorderWidth = 0.5f;
     self.title.text = model.title;
     self.endDate.text = timeRemaining;
     
-    [model fetchImageIfNeededWithCompletion:^(UIImage *image, NSError *error)
+    // TODO: Move this logic to the campaign feed controller.
+    /*[model fetchImageIfNeededWithCompletion:^(UIImage *image, NSError *error)
     {
         [self.thumbnailImageView setContentMode:UIViewContentModeScaleToFill];
         self.thumbnailImageView.image = image;
-    }];
+    }];*/
     
     // Cell appearance customization
     backgroundColor = [UIColor colorWithCIColor:[CIColor colorWithString:kCellBackgroundColor]];

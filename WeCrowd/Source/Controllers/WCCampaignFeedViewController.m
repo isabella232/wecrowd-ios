@@ -7,7 +7,7 @@
 //
 
 #import "WCCampaignFeedViewController.h"
-#import "WCCampaignHeaderModel.h"
+#import "WCCampaignModel.h"
 #import "WCLoginManager.h"
 #import "WCClient.h"
 #import "WCConstants.h"
@@ -59,7 +59,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 - (UITableViewCell *) tableView:(UITableView *) tableView cellForRowAtIndexPath:(NSIndexPath *) indexPath
 {
     WCCampaignTableViewCell *cell;
-    WCCampaignHeaderModel *model;
+    WCCampaignModel *model;
     
     cell = (WCCampaignTableViewCell *) [tableView dequeueReusableCellWithIdentifier:kCampaignCellReuseIdentifier
                                                                        forIndexPath:indexPath];
@@ -74,9 +74,9 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *) indexPath
 {
-    WCCampaignHeaderModel *selectedCampaign = (WCCampaignHeaderModel *) [self.campaigns objectAtIndex:indexPath.row];
+    WCCampaignModel *selectedCampaign = (WCCampaignModel *) [self.campaigns objectAtIndex:indexPath.row];
     
-    self.selectedCampaignID = selectedCampaign.campaignID;
+    self.selectedCampaignID = selectedCampaign.identifier;
     
     [self performSegueWithIdentifier:kIBSegueCampaignFeedToCampaignDetail sender:self];
     
@@ -100,7 +100,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 - (void) executeCampaignFetch
 {
-    [WCClient fetchFeaturedCampaigns:^(NSArray *campaigns, NSError *error)
+    [WCClient fetchAllCampaigns:^(NSArray *campaigns, NSError *error)
     {
             if (error)
             {

@@ -49,40 +49,36 @@
 + (void) createCampaignDetailFromDictionary:(NSDictionary *) dictionary
                                  completion:(WCModelProcessorCompletion) completion
 {
+    WCCampaignModel *detailModel;
     CGFloat donationAmount, donationTarget;
-    NSString *imageURLString, *campaignIDString;
+    NSString *imageURLString, *campaignID, *campaignTitle, *description;
     NSNumber* extractedNumber;
     
     // Nasty cast + conversion to get the model values.
     extractedNumber = ((NSNumber *) [dictionary objectForKey:kAPICampaignGoalKey]);
-    donationAmount = [extractedNumber floatValue];
-    
-    extractedNumber = ((NSNumber *) [dictionary objectForKey:kAPICampaignProgressKey]);
     donationTarget = [extractedNumber floatValue];
     
-    imageURLString = [dictionary objectForKey:kAPICampaignImageURLKey];
-    campaignIDString = [[dictionary objectForKey:kAPICampaignIDKey] stringValue];
+    extractedNumber = ((NSNumber *) [dictionary objectForKey:kAPICampaignProgressKey]);
+    donationAmount = [extractedNumber floatValue];
     
-    // Separate call to download the image - little wonky, I know
+    imageURLString = [dictionary objectForKey:kAPICampaignImageURLKey];
+    
+    campaignTitle = [dictionary objectForKey:kAPICampaignNameKey];
+    campaignID = [[dictionary objectForKey:kAPICampaignIDKey] stringValue];
+    description = [dictionary objectForKey:kAPICampaignDescriptionKey];
+    
+    detailModel = [[WCCampaignModel alloc] initWithIdentifier:campaignID
+                                                        title:campaignTitle
+                                                         goal:donationTarget];
+    detailModel.donationTargetAmount = donationTarget;
+    detailModel.donationAmount = donationAmount;
+    detailModel.detailDescription = description;
+    
     // TODO: This logic should be moved to the campaign detail controller.
     [WCClient fetchImageWithURLString:imageURLString
                       completionBlock:^(UIImage *image, NSError *error)
     {
-        WCCampaignDetailModel *detailModel;
-
-        if (error)
-        {
-          NSLog(@"Error: ModelProcessor: Unable to fetch image.");
-        }
-
-        detailModel = [[WCCampaignDetailModel alloc] initWithCampaign:campaignIDString
-                                                              title:[dictionary objectForKey:kAPICampaignNameKey]
-                                                            endDate:nil
-                                                     donationTarget:donationAmount
-                                                     donationAmount:donationTarget
-                                                        detailImage:image
-                                                  detailDescription:[dictionary objectForKey:kAPICampaignDescriptionKey]];
-
+        detailModel.image = image;
         completion(detailModel, error);
     }];
 }

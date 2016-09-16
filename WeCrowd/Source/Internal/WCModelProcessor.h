@@ -13,7 +13,7 @@
 
 typedef void (^WCModelProcessorCompletion) (id model, NSError *error);
 
-@class WCCampaignDetailModel, WCCreditCardModel;
+@class WCCreditCardModel;
 
 @interface WCModelProcessor : NSObject
 

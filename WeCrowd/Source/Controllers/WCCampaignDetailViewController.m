@@ -8,7 +8,7 @@
 
 #import "WCCampaignDetailViewController.h"
 #import "WCCampaignFeedViewController.h"
-#import "WCCampaignDetailModel.h"
+#import "WCCampaignModel.h"
 #import "WCClient.h"
 #import "WCConstants.h"
 #import "WCDonationManager.h"
@@ -29,7 +29,7 @@
 
 @property (nonatomic, strong, readwrite) UILabel *titleLabel;
 
-@property (strong, nonatomic, readwrite) WCCampaignDetailModel *campaignDetail;
+@property (strong, nonatomic, readwrite) WCCampaignModel *campaignDetail;
 
 @end
 
@@ -170,7 +170,7 @@
 - (void) executeFetchCampaignDetailWithID:(NSString *) campaignID
 {
     [WCClient fetchCampaignWithID:campaignID
-                  completionBlock:^(WCCampaignDetailModel *campaign, NSError *error)
+                  completionBlock:^(WCCampaignModel *campaign, NSError *error)
     {
         if (error)
         {

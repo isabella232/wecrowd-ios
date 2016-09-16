@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class WCCampaignDetailModel, WCCampaignDonationModel;
+@class WCCampaignModel, WCCampaignDonationModel;
 
 typedef void(^WCArrayReturnBlock) (NSArray *array, NSError *error);
-typedef void(^WCCampaignDetailReturnBlock) (WCCampaignDetailModel *campaign, NSError *error);
+typedef void(^WCCampaignModelReturnBlock) (WCCampaignModel *campaign, NSError *error);
 
 @interface WCClient : NSObject
 
@@ -32,7 +32,7 @@ typedef void(^WCCampaignDetailReturnBlock) (WCCampaignDetailModel *campaign, NSE
 + (void) fetchFeaturedCampaigns:(WCArrayReturnBlock) completionBlock;
 
 + (void) fetchCampaignWithID:(NSString *) campaignID
-             completionBlock:(WCCampaignDetailReturnBlock) completionBlock;
+             completionBlock:(WCCampaignModelReturnBlock) completionBlock;
 
 + (void) fetchImageWithURLString:(NSString *) URLString
                  completionBlock:(void (^)(UIImage *image, NSError *error)) completionBlock;

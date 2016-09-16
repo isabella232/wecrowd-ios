@@ -11,7 +11,6 @@
 #import "WCConstants.h"
 
 #import "WCCampaignModel.h"
-#import "WCCampaignDetailModel.h"
 #import "WCCreditCardModel.h"
 #import "WCClient.h"
 

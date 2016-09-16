@@ -23,7 +23,6 @@
 		C36B3A8B1B4DC33200EB8C9D /* WCError.m in Sources */ = {isa = PBXBuildFile; fileRef = C36B3A8A1B4DC33200EB8C9D /* WCError.m */; };
 		C37283EB1B38C9C400EE627C /* WCCampaignFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C37283EA1B38C9C400EE627C /* WCCampaignFeedViewController.m */; };
 		C391DF511B3CC34F008FB2FD /* PaymentFlow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C391DF4F1B3CC34F008FB2FD /* PaymentFlow.storyboard */; };
-		C39676591B2A53AE0071CEB5 /* WCCampaignDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C39676581B2A53AE0071CEB5 /* WCCampaignDetailModel.m */; };
 		C396765C1B2A57380071CEB5 /* WCCreditCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C396765B1B2A57380071CEB5 /* WCCreditCardModel.m */; };
 		C396765F1B2A5AD30071CEB5 /* WCCampaignDonationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C396765E1B2A5AD30071CEB5 /* WCCampaignDonationModel.m */; };
 		C39676621B2A5B430071CEB5 /* WCUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C39676611B2A5B430071CEB5 /* WCUserModel.m */; };
@@ -84,8 +83,6 @@
 		C37283E91B38C9C400EE627C /* WCCampaignFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCCampaignFeedViewController.h; path = Source/Controllers/WCCampaignFeedViewController.h; sourceTree = "<group>"; };
 		C37283EA1B38C9C400EE627C /* WCCampaignFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCCampaignFeedViewController.m; path = Source/Controllers/WCCampaignFeedViewController.m; sourceTree = "<group>"; };
 		C391DF501B3CC34F008FB2FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/PaymentFlow.storyboard; sourceTree = "<group>"; };
-		C39676571B2A53AE0071CEB5 /* WCCampaignDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCCampaignDetailModel.h; path = Source/Models/WCCampaignDetailModel.h; sourceTree = "<group>"; };
-		C39676581B2A53AE0071CEB5 /* WCCampaignDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCCampaignDetailModel.m; path = Source/Models/WCCampaignDetailModel.m; sourceTree = "<group>"; };
 		C396765A1B2A57380071CEB5 /* WCCreditCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCCreditCardModel.h; path = Source/Models/WCCreditCardModel.h; sourceTree = "<group>"; };
 		C396765B1B2A57380071CEB5 /* WCCreditCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WCCreditCardModel.m; path = Source/Models/WCCreditCardModel.m; sourceTree = "<group>"; };
 		C396765D1B2A5AD30071CEB5 /* WCCampaignDonationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WCCampaignDonationModel.h; path = Source/Models/WCCampaignDonationModel.h; sourceTree = "<group>"; };
@@ -281,8 +278,6 @@
 		C3060E351B2A017D00A9F596 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C39676571B2A53AE0071CEB5 /* WCCampaignDetailModel.h */,
-				C39676581B2A53AE0071CEB5 /* WCCampaignDetailModel.m */,
 				C396765A1B2A57380071CEB5 /* WCCreditCardModel.h */,
 				C396765B1B2A57380071CEB5 /* WCCreditCardModel.m */,
 				C396765D1B2A5AD30071CEB5 /* WCCampaignDonationModel.h */,
@@ -555,7 +550,6 @@
 				C3A8BA5D1D8B5744003EAF10 /* WCCampaignModel.m in Sources */,
 				C31B7F0F1B5701E7006689C3 /* WCSignatureViewController.m in Sources */,
 				C3EC4BB11B4306560005B1B9 /* WCPaymentManager.m in Sources */,
-				C39676591B2A53AE0071CEB5 /* WCCampaignDetailModel.m in Sources */,
 				C3060E0A1B2652D500A9F596 /* AppDelegate.m in Sources */,
 				C3D610A01B3E0314005D188F /* WCWelcomeViewController.m in Sources */,
 				C396765F1B2A5AD30071CEB5 /* WCCampaignDonationModel.m in Sources */,

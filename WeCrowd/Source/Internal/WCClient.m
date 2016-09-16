@@ -9,6 +9,7 @@
 #import "WCClient.h"
 #import "WCModelProcessor.h"
 #import "WCConstants.h"
+#import "WCCampaignModel.h"
 #import "WCCampaignDonationModel.h"
 #import "WCUserModel.h"
 #import "WCError.h"
@@ -194,14 +195,19 @@ typedef void (^WCFetchBlock) (id returnData, NSError * error);
         }
         else
         {
-            NSLog(@"Success: Client: Fetched campaign.");
             
-            [WCModelProcessor createCampaignDetailFromDictionary:returnData
-                                                      completion:^(WCCampaignModel *model, NSError *error)
-             
-            {
-                completionBlock(model, error);
-            }];
+            NSLog(@"Success: Client: Fetched campaign.");
+            WCCampaignModel *model;
+            
+            model = [WCModelProcessor createCampaignDetailFromDictionary:returnData];
+            
+            // TODO: This logic should be moved to the campaign detail controller.
+            [WCClient fetchImageWithURLString:model.imageURL
+                              completionBlock:^(UIImage *image, NSError *error)
+             {
+                 model.image = image;
+                 completionBlock(model, error);
+             }];
         }
     }];
 }

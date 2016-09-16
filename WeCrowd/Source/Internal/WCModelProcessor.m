@@ -45,8 +45,7 @@
     return array;
 }
 
-+ (void) createCampaignDetailFromDictionary:(NSDictionary *) dictionary
-                                 completion:(WCModelProcessorCompletion) completion
++ (WCCampaignModel *) createCampaignDetailFromDictionary:(NSDictionary *) dictionary
 {
     WCCampaignModel *detailModel;
     CGFloat donationAmount, donationTarget;
@@ -72,14 +71,9 @@
     detailModel.donationTargetAmount = donationTarget;
     detailModel.donationAmount = donationAmount;
     detailModel.detailDescription = description;
+    detailModel.imageURL = imageURLString;
     
-    // TODO: This logic should be moved to the campaign detail controller.
-    [WCClient fetchImageWithURLString:imageURLString
-                      completionBlock:^(UIImage *image, NSError *error)
-    {
-        detailModel.image = image;
-        completion(detailModel, error);
-    }];
+    return detailModel;
 }
 
 + (WCCreditCardModel *) createCreditCardModelFromFirstName:(NSString *) firstName

@@ -24,4 +24,14 @@
     return self;
 }
 
+- (void) copyValuesFromModel:(WCCampaignModel *) model
+{
+    self.title = model.title;
+    self.detailDescription = model.detailDescription;
+    self.donationTargetAmount = model.donationTargetAmount;
+    self.donationAmount = model.donationAmount;
+    self.imageURL = model.imageURL;
+    self.image = model.image;
+}
+
 @end

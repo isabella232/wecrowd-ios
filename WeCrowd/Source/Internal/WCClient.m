@@ -201,7 +201,6 @@ typedef void (^WCFetchBlock) (id returnData, NSError * error);
             
             model = [WCModelProcessor createCampaignDetailFromDictionary:returnData];
             
-            // TODO: This logic should be moved to the campaign detail controller.
             [WCClient fetchImageWithURLString:model.imageURL
                               completionBlock:^(UIImage *image, NSError *error)
              {

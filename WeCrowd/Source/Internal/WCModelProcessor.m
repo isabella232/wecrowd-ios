@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "WCConstants.h"
 
-#import "WCCampaignHeaderModel.h"
+#import "WCCampaignModel.h"
 #import "WCCampaignDetailModel.h"
 #import "WCCreditCardModel.h"
 #import "WCClient.h"
@@ -26,17 +26,21 @@
     for (int i = 0; i < [campaigns count]; ++i)
     {
         NSDictionary *campaign;
-        NSString *campaignID, *campaignName, *imageURLString;
+        NSString *campaignID, *campaignTitle;
+        NSNumber *goalObject;
+        CGFloat campaignGoal;
         
         campaign = campaigns[i];
         
         campaignID = [[campaign objectForKey:kAPICampaignIDKey] stringValue];
-        campaignName = [campaign objectForKey:kAPICampaignNameKey];
-        imageURLString = [campaign objectForKey:kAPICampaignImageURLKey];
+        campaignTitle = [campaign objectForKey:kAPICampaignNameKey];
         
-        array[i] = [[WCCampaignHeaderModel alloc] initWithCampaign:campaignID
-                                                             title:campaignName
-                                                    imageURLString:imageURLString];
+        goalObject = [campaign objectForKey:kAPICampaignGoalKey];
+        campaignGoal = [goalObject floatValue];
+        
+        array[i] = [[WCCampaignModel alloc] initWithIdentifier:campaignID
+                                                         title:campaignTitle
+                                                          goal:campaignGoal];
     }
     
     return array;
@@ -60,6 +64,7 @@
     campaignIDString = [[dictionary objectForKey:kAPICampaignIDKey] stringValue];
     
     // Separate call to download the image - little wonky, I know
+    // TODO: This logic should be moved to the campaign detail controller.
     [WCClient fetchImageWithURLString:imageURLString
                       completionBlock:^(UIImage *image, NSError *error)
     {

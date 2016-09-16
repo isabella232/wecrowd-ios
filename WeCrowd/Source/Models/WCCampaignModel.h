@@ -23,4 +23,8 @@
 
 @property (nonatomic, strong) NSDate* dateEnd;
 
+- (instancetype) initWithIdentifier:(NSString *) identifier
+                              title:(NSString *) title
+                               goal:(CGFloat) goal;
+
 @end

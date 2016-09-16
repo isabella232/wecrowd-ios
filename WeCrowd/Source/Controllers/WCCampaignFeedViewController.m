@@ -77,6 +77,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
          {
              if (campaign)
              {
+                 [self updateCampaignAtIndexPath:indexPath withCampaign:campaign];
                  [cell updateWithCampaign:campaign];
              }
          }];
@@ -148,6 +149,21 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 - (WCCampaignModel *) campaignAtIndexPath:(NSIndexPath *) indexPath
 {
     return [self.campaigns objectAtIndex:indexPath.row];
+}
+
+- (void) updateCampaignAtIndexPath:(NSIndexPath *) indexPath
+                      withCampaign:(WCCampaignModel *) campaign
+{
+    WCCampaignModel *campaignToUpdate;
+    
+    campaignToUpdate = [self campaignAtIndexPath:indexPath];
+    
+    if (campaignToUpdate)
+    {
+        NSAssert([campaign.identifier isEqualToString:campaignToUpdate.identifier], @"Unable to update campaigns with mismatched IDs.");
+        
+        [campaignToUpdate copyValuesFromModel:campaign];
+    }
 }
 
 - (void) showCampaignFeedError:(NSError *) error

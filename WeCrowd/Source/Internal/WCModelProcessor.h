@@ -13,15 +13,14 @@
 
 typedef void (^WCModelProcessorCompletion) (id model, NSError *error);
 
-@class WCCreditCardModel;
+@class WCCreditCardModel, WCCampaignModel;
 
 @interface WCModelProcessor : NSObject
 
 // Returns array of campaign models.
 + (NSArray *) createProcessedArrayForCampaigns:(NSArray *) campaigns;
 
-+ (void) createCampaignDetailFromDictionary:(NSDictionary *) dictionary
-                                 completion:(WCModelProcessorCompletion) completion;
++ (WCCampaignModel *) createCampaignDetailFromDictionary:(NSDictionary *) dictionary;
 
 + (WCCreditCardModel *) createCreditCardModelFromFirstName:(NSString *) firstName
                                                   lastName:(NSString *) lastName

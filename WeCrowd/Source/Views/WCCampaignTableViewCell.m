@@ -42,12 +42,9 @@ static float const kCellBorderWidth = 0.5f;
     self.title.text = model.title;
     self.endDate.text = timeRemaining;
     
-    // TODO: Move this logic to the campaign feed controller.
-    /*[model fetchImageIfNeededWithCompletion:^(UIImage *image, NSError *error)
-    {
-        [self.thumbnailImageView setContentMode:UIViewContentModeScaleToFill];
-        self.thumbnailImageView.image = image;
-    }];*/
+    
+    [self.thumbnailImageView setContentMode:UIViewContentModeScaleToFill];
+    self.thumbnailImageView.image = model.image;
     
     // Cell appearance customization
     backgroundColor = [UIColor colorWithCIColor:[CIColor colorWithString:kCellBackgroundColor]];
@@ -55,6 +52,12 @@ static float const kCellBorderWidth = 0.5f;
     [self.contentInsetView.layer setBorderWidth:kCellBorderWidth];
     [self.contentInsetView.layer setBorderColor:backgroundColor.CGColor];
     [self.contentView setBackgroundColor:backgroundColor];
+}
+
+- (void) updateWithCampaign:(WCCampaignModel *) model
+{
+    self.title.text = model.title;
+    self.thumbnailImageView.image = model.image;
 }
 
 @end

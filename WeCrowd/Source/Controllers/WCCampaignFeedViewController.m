@@ -13,6 +13,7 @@
 #import "WCConstants.h"
 #import "WCCampaignTableViewCell.h"
 #import "WCAlert.h"
+#import "WCError.h"
 
 // UITableViewCell identifiers
 static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
@@ -20,7 +21,8 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 @interface WCCampaignFeedViewController ()
 
 @property (nonatomic, strong, readwrite) NSArray *campaigns;
-@property (nonatomic, weak, readwrite) NSString *selectedCampaignID;
+
+@property (nonatomic, weak, readwrite) WCCampaignModel *selectedCampaign;
 
 @property (nonatomic, weak, readwrite) id<CampaignDetailDelegate> delegate;
 
@@ -34,7 +36,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 {
     [super viewDidLoad];
     
-    [self executeCampaignFetch];
+    [self fetchCampaignsWithCompletionCallback:nil];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
@@ -63,9 +65,22 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
     
     cell = (WCCampaignTableViewCell *) [tableView dequeueReusableCellWithIdentifier:kCampaignCellReuseIdentifier
                                                                        forIndexPath:indexPath];
-    model = [self.campaigns objectAtIndex:indexPath.row];
+    model = [self campaignAtIndexPath:indexPath];
     
     [cell configureForCampaignHeader:model];
+    
+    if (!model.image)
+    {
+        [WCClient fetchCampaignWithID:model.identifier
+                      completionBlock:^(WCCampaignModel *campaign, NSError *error)
+         {
+             if (campaign)
+             {
+                 [self updateCampaignAtIndexPath:indexPath withCampaign:campaign];
+                 [cell updateWithCampaign:campaign];
+             }
+         }];
+    }
     
     return cell;
 }
@@ -74,9 +89,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *) indexPath
 {
-    WCCampaignModel *selectedCampaign = (WCCampaignModel *) [self.campaigns objectAtIndex:indexPath.row];
-    
-    self.selectedCampaignID = selectedCampaign.identifier;
+    self.selectedCampaign = [self campaignAtIndexPath:indexPath];
     
     [self performSegueWithIdentifier:kIBSegueCampaignFeedToCampaignDetail sender:self];
     
@@ -92,37 +105,62 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
         self.delegate = [segue destinationViewController];
         
         [self.delegate campaignFeedViewController:self
-                          didSelectCampaignWithID:self.selectedCampaignID];
+                                didSelectCampaign:self.selectedCampaign];
     }
 }
 
 #pragma mark - Helper Methods
 
-- (void) executeCampaignFetch
+- (void) fetchCampaignsWithCompletionCallback:(nullable void (^)(NSError *error)) completion
 {
     [WCClient fetchAllCampaigns:^(NSArray *campaigns, NSError *error)
     {
-            if (error)
+        if (error)
+        {
+            [self showCampaignFeedError:error];
+        }
+        else
+        {
+            if ([WCLoginManager userType] == WCLoginUserPayer)
             {
-                [self showCampaignFeedError:error];
+                self.campaigns = campaigns;
             }
             else
             {
-                if ([WCLoginManager userType] == WCLoginUserPayer)
-                {
-                    self.campaigns = campaigns;
-                }
-                else
-                {
-                    // Show only an arbitrary 1/3 of the campaigns for the merchant.
-                    self.campaigns = [campaigns subarrayWithRange:NSMakeRange(0, campaigns.count / 3)];
-                }
-                
-                // Force a refresh of the table since we can't guarantee
-                // when the request will finish until this block
-                [self.tableView reloadData];
+                // Show only an arbitrary 1/3 of the campaigns for the merchant.
+                self.campaigns = [campaigns subarrayWithRange:NSMakeRange(0, campaigns.count / 3)];
             }
+            
+            // Force a refresh of the table since we can't guarantee
+            // when the request will finish until this block
+            [self.tableView reloadData];
+        }
+        
+        if (completion)
+        {
+            completion(error);
+        }
     }];
+}
+
+- (WCCampaignModel *) campaignAtIndexPath:(NSIndexPath *) indexPath
+{
+    return [self.campaigns objectAtIndex:indexPath.row];
+}
+
+- (void) updateCampaignAtIndexPath:(NSIndexPath *) indexPath
+                      withCampaign:(WCCampaignModel *) campaign
+{
+    WCCampaignModel *campaignToUpdate;
+    
+    campaignToUpdate = [self campaignAtIndexPath:indexPath];
+    
+    if (campaignToUpdate)
+    {
+        NSAssert([campaign.identifier isEqualToString:campaignToUpdate.identifier], @"Unable to update campaigns with mismatched IDs.");
+        
+        [campaignToUpdate copyValuesFromModel:campaign];
+    }
 }
 
 - (void) showCampaignFeedError:(NSError *) error
@@ -135,7 +173,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
                                           withTitle:@"Unable to fetch campaigns."
                                             message:message
                                         optionTitle:@"Try Again"
-                                   optionCompletion:^{ [self executeCampaignFetch]; }
+                                   optionCompletion:^{ [self fetchCampaignsWithCompletionCallback:nil]; }
                                     closeCompletion:nil];
 }
 

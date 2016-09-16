@@ -62,6 +62,7 @@
         [self.giveMoneyButton setTitle:@"Donate" forState:UIControlStateNormal];
     }
     
+    [self populateViewFromCampaign:self.campaignDetail];
     self.navigationItem.titleView = self.titleLabel;
 }
 
@@ -74,9 +75,9 @@
 #pragma mark - CampaignDetailDelegate
 
 - (void) campaignFeedViewController:(UIViewController *) viewController
-            didSelectCampaignWithID:(NSString *) campaignID
+                  didSelectCampaign:(WCCampaignModel *) campaign
 {
-    [self executeFetchCampaignDetailWithID:campaignID];
+    self.campaignDetail = campaign;
 }
 
 #pragma mark - PaymentViewDelagate
@@ -167,7 +168,7 @@
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
-- (void) executeFetchCampaignDetailWithID:(NSString *) campaignID
+- (void) fetchCampaignDetailWithID:(NSString *) campaignID
 {
     [WCClient fetchCampaignWithID:campaignID
                   completionBlock:^(WCCampaignModel *campaign, NSError *error)
@@ -183,41 +184,46 @@
                                                  withTitle:@"Unable to fetch campaign details"
                                                    message:message
                                                optionTitle:@"Try Again"
-                                          optionCompletion:^{ [self executeFetchCampaignDetailWithID:campaignID]; }
+                                          optionCompletion:^{ [self fetchCampaignDetailWithID:campaignID]; }
                                            closeCompletion:nil];
         }
         else
         {
-            CGFloat donationProgress;
-
             self.campaignDetail = campaign;
-
-            donationProgress = self.campaignDetail.donationTargetAmount == 0 ? 0 : self.campaignDetail.donationAmount / self.campaignDetail.donationTargetAmount;
-
-            // Configure the UI
-            self.titleLabel.text = self.campaignDetail.title;
-            self.campaignImage.image = self.campaignDetail.image;
-            self.campaignDonationProgress.text = [NSString stringWithFormat:@"%.f", donationProgress * 100];
-            self.campaignDonationProgress.text = [self.campaignDonationProgress.text stringByAppendingString:@"% funded"];
-            self.campaignDonationProgressBar.progress = donationProgress;
-
-            // Hack for resizing the headerview on iPad since the imageview does not
-            // respect the header view height
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            {
-                CGRect headerFrame;
-
-                headerFrame = self.tableView.tableHeaderView.frame;
-                headerFrame.size.height = self.campaignImage.frame.size.height + 400;
-
-                self.tableView.tableHeaderView.frame = headerFrame;
-                self.tableView.tableHeaderView = self.campaignImage;
-            }
+            [self populateViewFromCampaign:self.campaignDetail];
         }
-
-        // Scroll the text view now the image height is calculated
-        [self.campaignDescription setContentOffset:CGPointMake(0, 0) animated:YES];
     }];
+}
+
+- (void) populateViewFromCampaign:(WCCampaignModel *) campaign
+{
+    CGFloat donationProgress;
+    
+    donationProgress = campaign.donationTargetAmount == 0 ? 0 : campaign.donationAmount / campaign.donationTargetAmount;
+    
+    // Configure the UI
+    self.titleLabel.text = campaign.title;
+    self.campaignImage.image = campaign.image;
+    self.campaignDonationProgress.text = [NSString stringWithFormat:@"%.f", donationProgress * 100];
+    self.campaignDonationProgress.text = [self.campaignDonationProgress.text stringByAppendingString:@"% funded"];
+    self.campaignDonationProgressBar.progress = donationProgress;
+    
+    // Hack for resizing the headerview on iPad since the imageview does not
+    // respect the header view height
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        CGRect headerFrame;
+        
+        headerFrame = self.tableView.tableHeaderView.frame;
+        headerFrame.size.height = self.campaignImage.frame.size.height + 400;
+        
+        self.tableView.tableHeaderView.frame = headerFrame;
+        self.tableView.tableHeaderView = self.campaignImage;
+    }
+    
+    
+    // Scroll the text view now the image height is calculated
+    [self.campaignDescription setContentOffset:CGPointMake(0, 0) animated:YES];
 }
 
 #pragma mark Setup

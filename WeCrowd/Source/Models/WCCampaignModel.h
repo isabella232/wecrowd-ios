@@ -27,4 +27,6 @@
                               title:(NSString *) title
                                goal:(CGFloat) goal;
 
+- (void) copyValuesFromModel:(WCCampaignModel *) model;
+
 @end

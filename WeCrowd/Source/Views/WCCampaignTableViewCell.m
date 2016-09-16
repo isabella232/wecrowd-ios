@@ -7,7 +7,7 @@
 //
 
 #import "WCCampaignTableViewCell.h"
-#import "WCCampaignHeaderModel.h"
+#import "WCCampaignModel.h"
 
 @interface WCCampaignTableViewCell ()
 

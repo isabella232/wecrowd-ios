@@ -13,6 +13,7 @@
 #import "WCConstants.h"
 #import "WCCampaignTableViewCell.h"
 #import "WCAlert.h"
+#import "WCError.h"
 
 // UITableViewCell identifiers
 static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
@@ -20,6 +21,8 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 @interface WCCampaignFeedViewController ()
 
 @property (nonatomic, strong, readwrite) NSArray *campaigns;
+
+// TODO: should just pass off the campaign model.
 @property (nonatomic, weak, readwrite) NSString *selectedCampaignID;
 
 @property (nonatomic, weak, readwrite) id<CampaignDetailDelegate> delegate;
@@ -34,7 +37,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 {
     [super viewDidLoad];
     
-    [self executeCampaignFetch];
+    [self fetchCampaignsWithCompletionCallback:nil];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
@@ -63,7 +66,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
     
     cell = (WCCampaignTableViewCell *) [tableView dequeueReusableCellWithIdentifier:kCampaignCellReuseIdentifier
                                                                        forIndexPath:indexPath];
-    model = [self.campaigns objectAtIndex:indexPath.row];
+    model = [self campaignAtIndexPath:indexPath];
     
     [cell configureForCampaignHeader:model];
     
@@ -98,31 +101,38 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 #pragma mark - Helper Methods
 
-- (void) executeCampaignFetch
+- (void) fetchCampaignsWithCompletionCallback:(void (^)(NSError *error)) completion
 {
     [WCClient fetchAllCampaigns:^(NSArray *campaigns, NSError *error)
     {
-            if (error)
+        if (error)
+        {
+            [self showCampaignFeedError:error];
+        }
+        else
+        {
+            if ([WCLoginManager userType] == WCLoginUserPayer)
             {
-                [self showCampaignFeedError:error];
+                self.campaigns = campaigns;
             }
             else
             {
-                if ([WCLoginManager userType] == WCLoginUserPayer)
-                {
-                    self.campaigns = campaigns;
-                }
-                else
-                {
-                    // Show only an arbitrary 1/3 of the campaigns for the merchant.
-                    self.campaigns = [campaigns subarrayWithRange:NSMakeRange(0, campaigns.count / 3)];
-                }
-                
-                // Force a refresh of the table since we can't guarantee
-                // when the request will finish until this block
-                [self.tableView reloadData];
+                // Show only an arbitrary 1/3 of the campaigns for the merchant.
+                self.campaigns = [campaigns subarrayWithRange:NSMakeRange(0, campaigns.count / 3)];
             }
+            
+            // Force a refresh of the table since we can't guarantee
+            // when the request will finish until this block
+            [self.tableView reloadData];
+        }
+        
+        completion(error);
     }];
+}
+
+- (WCCampaignModel *) campaignAtIndexPath:(NSIndexPath *) indexPath
+{
+    return [self.campaigns objectAtIndex:indexPath.row];
 }
 
 - (void) showCampaignFeedError:(NSError *) error
@@ -135,7 +145,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
                                           withTitle:@"Unable to fetch campaigns."
                                             message:message
                                         optionTitle:@"Try Again"
-                                   optionCompletion:^{ [self executeCampaignFetch]; }
+                                   optionCompletion:^{ [self fetchCampaignsWithCompletionCallback:nil]; }
                                     closeCompletion:nil];
 }
 

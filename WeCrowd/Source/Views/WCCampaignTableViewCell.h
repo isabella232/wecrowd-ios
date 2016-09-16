@@ -13,5 +13,6 @@
 @interface WCCampaignTableViewCell : UITableViewCell
 
 - (void) configureForCampaignHeader:(WCCampaignModel *) model;
+- (void) updateWithCampaign:(WCCampaignModel *) model;
 
 @end

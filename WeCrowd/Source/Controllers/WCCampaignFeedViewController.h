@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class WCCampaignFeedViewController;
+@class WCCampaignFeedViewController, WCCampaignModel;
 
 @protocol CampaignDetailDelegate <NSObject>
 
 - (void) campaignFeedViewController:(UIViewController *) viewController
-            didSelectCampaignWithID:(NSString *) campaignID;
+                  didSelectCampaign:(WCCampaignModel *) campaign;
 
 @end
 

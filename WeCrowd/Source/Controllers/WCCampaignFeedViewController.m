@@ -22,8 +22,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 @property (nonatomic, strong, readwrite) NSArray *campaigns;
 
-// TODO: should just pass off the campaign model.
-@property (nonatomic, weak, readwrite) NSString *selectedCampaignID;
+@property (nonatomic, weak, readwrite) WCCampaignModel *selectedCampaign;
 
 @property (nonatomic, weak, readwrite) id<CampaignDetailDelegate> delegate;
 
@@ -90,9 +89,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *) indexPath
 {
-    WCCampaignModel *selectedCampaign = (WCCampaignModel *) [self.campaigns objectAtIndex:indexPath.row];
-    
-    self.selectedCampaignID = selectedCampaign.identifier;
+    self.selectedCampaign = [self campaignAtIndexPath:indexPath];
     
     [self performSegueWithIdentifier:kIBSegueCampaignFeedToCampaignDetail sender:self];
     
@@ -108,7 +105,7 @@ static NSString* const kCampaignCellReuseIdentifier = @"CampaignCell";
         self.delegate = [segue destinationViewController];
         
         [self.delegate campaignFeedViewController:self
-                          didSelectCampaignWithID:self.selectedCampaignID];
+                                didSelectCampaign:self.selectedCampaign];
     }
 }
 
